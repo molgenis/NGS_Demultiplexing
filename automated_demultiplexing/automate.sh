@@ -85,7 +85,7 @@ do
 		
 		if [ ! -f ${LOGSDIR}/${PROJECTNAME}_Demultiplexing.started ]
 		then
-			python ${EBROOTNGS_DEMULTIPLEX}/automated_demultiplexing/checkSampleSheet.py --input ${SAMPLESHEETSDIR}/${PROJECTNAME}.csv --logfile ${DEBUGGER}.error
+			python ${EBROOTNGS_DEMULTIPLEXING}/automated_demultiplexing/checkSampleSheet.py --input ${SAMPLESHEETSDIR}/${PROJECTNAME}.csv --logfile ${DEBUGGER}.error
 			if [ $? == 1 ]
 			then
 				cat  ${DEBUGGER}.error | mail -s "Samplesheet error ${PROJECTNAME}" ${ONTVANGER}
@@ -122,8 +122,8 @@ do
 				cp ${SAMPLESHEETSDIR}/${PROJECTNAME}.csv run_${run}_${sequencer}.csv
 				echo "copied ${SAMPLESHEETSDIR}/${PROJECTNAME}.csv to run_${run}_${sequencer}.csv" >> ${LOGGERPIPELINE}
 
-                       		cp ${EBROOTNGS_DEMULTIPLEX}/generate_template.sh ./
-				echo "Copied ${EBROOTNGS_DEMULTIPLEX}/generate_template.sh to ." >> ${LOGGERPIPELINE}
+                       		cp ${EBROOTNGS_DEMULTIPLEXING}/generate_template.sh ./
+				echo "Copied ${EBROOTNGS_DEMULTIPLEXING}/generate_template.sh to ." >> ${LOGGERPIPELINE}
 				echo "" >> ${LOGGERPIPELINE}
 
 				### Generating scripts

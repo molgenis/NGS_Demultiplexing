@@ -9,7 +9,7 @@ SEQUENCER=$1
 RUNNUMBER=${2}_${SEQUENCER}
 WORKDIR=$3
 GROUP=$4
-WORKFLOW=${EBROOTNGS_DEMULTIPLEX}/workflow.csv
+WORKFLOW=${EBROOTNGS_DEMULTIPLEXING}/workflow.csv
 echo "$WORKDIR AND $RUNNUMBER"
 echo "GROUPIE: $GROUP"
 
@@ -25,13 +25,13 @@ then
     	rm -rf ${WORKDIR}/generatedscripts/run_${RUNNUMBER}/out.csv
 fi
 
-perl ${EBROOTNGS_DEMULTIPLEX}/convertParametersGitToMolgenis.pl ${EBROOTNGS_DEMULTIPLEX}/parameters.csv > \
+perl ${EBROOTNGS_DEMULTIPLEXING}/convertParametersGitToMolgenis.pl ${EBROOTNGS_DEMULTIPLEXING}/parameters.csv > \
 ${WORKDIR}/generatedscripts/run_${RUNNUMBER}/out.csv
 
-perl ${EBROOTNGS_DEMULTIPLEX}/convertParametersGitToMolgenis.pl ${EBROOTNGS_DEMULTIPLEX}/${ENVIRONMENT_PARAMETERS} > \
+perl ${EBROOTNGS_DEMULTIPLEXING}/convertParametersGitToMolgenis.pl ${EBROOTNGS_DEMULTIPLEXING}/${ENVIRONMENT_PARAMETERS} > \
 ${WORKDIR}/generatedscripts/run_${RUNNUMBER}/environment_parameters.csv
 
-perl ${EBROOTNGS_DEMULTIPLEX}/convertParametersGitToMolgenis.pl ${EBROOTNGS_DEMULTIPLEX}/parameters_${GROUP}.csv > \
+perl ${EBROOTNGS_DEMULTIPLEXING}/convertParametersGitToMolgenis.pl ${EBROOTNGS_DEMULTIPLEXING}/parameters_${GROUP}.csv > \
 ${WORKDIR}/generatedscripts/run_${RUNNUMBER}/parameters_group.csv
 
 sh $EBROOTMOLGENISMINCOMPUTE/molgenis_compute.sh \
