@@ -31,7 +31,7 @@ do
 	run=$3
 	IFS=$OLDIFS
 
-	miseqCompleted="no"
+	miSeqCompleted="no"
 
         ## Check if there the run is already completed
         if [[ -f ${NEXTSEQDIR}/${PROJECTNAME}/RTAComplete.txt ]] && [[ "${sequencer}" == "M01785" || "${sequencer}" == "M01997" ]]
