@@ -12,6 +12,17 @@ echo "Importing Samplesheet into ${MOLGENISSERVER}"
 
 cp ${sampleSheet} ${MCsampleSheet} 
 
-CURLRESPONSE=$(curl -H "Content-Type: application/json" -X POST -d "{"username"="${USERNAME}", "password"="${PASSWORD}"}" https://${MOLGENISSERVER}/api/v1/login)
-TOKEN=${CURLRESPONSE:10:32}
-curl -H "x-molgenis-token:${TOKEN}" -X POST -F"file=@${MCsampleSheet}" -Faction=add -Fnotify=false https://${MOLGENISSERVER}/plugin/importwizard/importFile
+
+if [ ! -f ${workDir}/logs/${runPrefix}.is.uploaded ]
+then
+
+	CURLRESPONSE=$(curl -H "Content-Type: application/json" -X POST -d "{"username"="${USERNAME}", "password"="${PASSWORD}"}" https://${MOLGENISSERVER}/api/v1/login)
+	TOKEN=${CURLRESPONSE:10:32}
+	curl -H "x-molgenis-token:${TOKEN}" -X POST -F"file=@${MCsampleSheet}" -Faction=add -Fnotify=false https://${MOLGENISSERVER}/plugin/importwizard/importFile
+
+	touch ${workDir}/logs/${runPrefix}.is.uploaded
+else
+
+	echo "samplesheet already uploaded to ${MOLGENISSERVER}"
+
+fi
