@@ -232,4 +232,8 @@ then
 fi
 
 mv ${fluxDir}/${filenamePrefix}* ${runResultsDir}
+cd ${runResultsDir}
+chmod u+rw,u-x,g+r,g-wx,o-rwx ${runResultsDir}/*
 echo "moved ${fluxDir}/${filenamePrefix}* ${runResultsDir}"
+cd -
+
