@@ -3,6 +3,7 @@
 #string MCsampleSheet
 #string workDir
 #string runPrefix
+#string runResultsDir
 
 WHOAMI=$(whoami)
 . /home/$WHOAMI/molgenis.cfg
@@ -12,6 +13,7 @@ echo "Importing Samplesheet into ${MOLGENISSERVER}"
 
 cp ${sampleSheet} ${MCsampleSheet} 
 
+chmod u+rw,u-x,g+r,g-wx,o-rwx ${runResultsDir}/${runPrefix}*
 
 if [ ! -f ${workDir}/logs/${runPrefix}.is.uploaded ]
 then
