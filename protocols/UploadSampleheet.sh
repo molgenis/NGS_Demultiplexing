@@ -12,7 +12,7 @@ WHOAMI=$(whoami)
 echo "Importing Samplesheet into ${MOLGENISSERVER}"
 
 cp ${sampleSheet} ${MCsampleSheet} 
-
+cp ${sampleSheet} ${runResultsDir}${runPrefix}.csv
 chmod u+rw,u-x,g+r,g-wx,o-rwx ${runResultsDir}/${runPrefix}*
 
 if [ ! -f ${workDir}/logs/${runPrefix}.is.uploaded ]

@@ -1,6 +1,7 @@
 #MOLGENIS walltime=12:00:00 nodes=1 ppn=2 mem=2gb
 
 #string runResultsDir
+#string intermediateDir
 #string seqType
 #list barcode
 #string filenamePrefix
@@ -99,9 +100,8 @@ _save_log() {
 #
 # Initialize script specific vars.
 #
-RESULTDir=${runResultsDir[0]}
 
-makeTmpDir ${runResultsDir}
+makeTmpDir ${intermediateDir}
 fluxDir=${MC_tmpFile}
 
 #
