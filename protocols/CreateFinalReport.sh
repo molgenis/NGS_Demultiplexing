@@ -57,7 +57,7 @@ then
 		fi
 	done<${intermediateDir}barcode2.txt
 	
-	if [ "${barcode2bool}" =="true" ]
+	if [ "${barcode2bool}" == "true" ]
 	then
 		cut -d"," -f$barcode,$barcode2 --output-delimiter=$'-' ${intermediateDir}/changedDollar1.csv > ${intermediateDir}/changedDollar2.csv
 		
