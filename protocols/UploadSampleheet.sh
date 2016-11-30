@@ -15,6 +15,25 @@ cp ${sampleSheet} ${MCsampleSheet}
 cp ${sampleSheet} ${runResultsDir}${runPrefix}.csv
 chmod u+rw,u-x,g+r,g-wx,o-rwx ${runResultsDir}/${runPrefix}*
 
+group=""
+
+if [ ${runResultsDir} == *"umcg-gaf"* ]
+then
+	group="umcg-gaf"
+elif [ ${runResultsDir} == *"umcg-gd"* ]
+then
+	group="umcg-gd"
+else
+	group="other"
+fi
+
+
+awk -v var="$group" 'BEGIN{FS=","}{if (NR==1){print $0",group"}else{print $0","var}}' ${MCsampleSheet} > ${MCsampleSheet}.tmp
+echo "updated ${MCsampleSheet} with group column"
+
+mv ${MCsampleSheet}.tmp ${MCsampleSheet}
+
+
 if [ ! -f ${workDir}/logs/${runPrefix}.is.uploaded ]
 then
 	CURLRESPONSE=$(curl -H "Content-Type: application/json" -X POST -d "{"username"="${USERNAME}", "password"="${PASSWORD}"}" https://${MOLGENISSERVER}/api/v1/login)

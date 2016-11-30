@@ -1,4 +1,4 @@
-#MOLGENIS walltime=12:00:00 nodes=1 ppn=2 mem=2gb
+#MOLGENIS walltime=12:00:00 nodes=1 ppn=2 mem=5gb
 
 #string runResultsDir
 #string intermediateDir
@@ -231,6 +231,7 @@ then
 
 fi
 cd ${runResultsDir}
+
 mv ${fluxDir}/${filenamePrefix}* .
 echo "moved ${fluxDir}/${filenamePrefix}* ."
 cd -

@@ -1,4 +1,4 @@
-#MOLGENIS walltime=12:00:00 nodes=1 ppn=1 mem=1gb
+#MOLGENIS walltime=12:00:00 nodes=1 ppn=1 mem=5gb
 #string runResultsDir
 #string intermediateDir
 #list internalSampleID
