@@ -31,14 +31,14 @@ fi
 awk -v var="$group" 'BEGIN{FS=","}{if (NR==1){print $0",group"}else{print $0","var}}' ${MCsampleSheet} > ${MCsampleSheet}.tmp
 echo "updated ${MCsampleSheet} with group column"
 
-mv ${MCsampleSheet}.tmp ${MCsampleSheet}
+mv ${MCsampleSheet}.tmp base_${MCsampleSheet}
 
 
 if [ ! -f ${workDir}/logs/${runPrefix}.is.uploaded ]
 then
 	CURLRESPONSE=$(curl -H "Content-Type: application/json" -X POST -d "{"username"="${USERNAME}", "password"="${PASSWORD}"}" https://${MOLGENISSERVER}/api/v1/login)
 	TOKEN=${CURLRESPONSE:10:32}
-	curl -H "x-molgenis-token:${TOKEN}" -X POST -F"file=@${MCsampleSheet}" -Faction=add -Fnotify=false https://${MOLGENISSERVER}/plugin/importwizard/importFile
+	curl -H "x-molgenis-token:${TOKEN}" -X POST -F"file=@base_${MCsampleSheet}" -Faction=add -Fnotify=false https://${MOLGENISSERVER}/plugin/importwizard/importFile
 
 	touch ${workDir}/logs/${runPrefix}.is.uploaded
 else
