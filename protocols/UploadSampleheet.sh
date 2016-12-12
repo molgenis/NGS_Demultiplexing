@@ -31,7 +31,7 @@ fi
 awk -v var="$group" 'BEGIN{FS=","}{if (NR==1){print $0",group"}else{print $0","var}}' ${MCsampleSheet} > ${MCsampleSheet}.tmp
 echo "updated ${MCsampleSheet} with group column"
 
-mv ${MCsampleSheet}.tmp base_${MCsampleSheet}
+mv ${MCsampleSheet}.tmp ${MCsampleSheet}
 
 
 if [ ! -f ${workDir}/logs/${runPrefix}.is.uploaded ]
