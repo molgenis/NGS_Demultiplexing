@@ -39,7 +39,7 @@ count=0
 groupNameBool="false"
 for i in "${array[@]}"
 do
-  	if [ "${i}" == "group" ]
+  	if [ "${i}" == "groupName" ]
         then
             	groupNameBool="true"
         fi
