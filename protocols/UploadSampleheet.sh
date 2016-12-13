@@ -27,8 +27,10 @@ else
 	group="other"
 fi
 
+mac2unix ${MCsampleSheet}
 
-awk -v var="$group" 'BEGIN{FS=","}{if (NR==1){print $0",group"}else{print $0","var}}' ${MCsampleSheet} > ${MCsampleSheet}.tmp
+awk -v var="$group" 'BEGIN{FS=","}{if (NR==1){print $0",group"}else{print $0","var}}' ${MCsampleSheet} | perl -pe 'chomp if eof' > ${MCsampleSheet}.tmp
+
 echo "updated ${MCsampleSheet} with group column"
 
 mv ${MCsampleSheet}.tmp ${MCsampleSheet}
