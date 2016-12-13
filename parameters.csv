@@ -29,7 +29,7 @@ intermediateDir,${workDir}/tmp/${runID}_${sequencer}/
 
 bcl2fastqDir,${nextSeqRunDataDir}/${project}
 sampleSheet,${workDir}/generatedscripts/${runID}_${sequencer}/${runID}_${sequencer}.csv
-MCsampleSheet,${intermediateDir}/base_GCCSamplelist.csv
+MCsampleSheet,${intermediateDir}/base_GCCsamplelist.csv
 
 sourcesDir,${root}/sources/
 
