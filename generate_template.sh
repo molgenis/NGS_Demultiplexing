@@ -1,4 +1,6 @@
 #!/bin/bash
+set -e 
+set -u
 
 ##external call with 3 arguments (sequencer, run and workDir)
 
@@ -25,6 +27,29 @@ then
     	rm -rf ${WORKDIR}/generatedscripts/run_${RUNNUMBER}/out.csv
 fi
 
+#
+###### Dual barcode checker
+#
+
+sampsheet=${WORKDIR}/generatedscripts/run_${RUNNUMBER}/run_${RUNNUMBER}.csv
+perl -pi -e 's/\r(?!\n)//g' ${sampsheet}
+mac2unix ${sampsheet}
+rm -f barcode2.isthere
+## Will return or nothing or in case there is a dualbarcode it will create a file
+sh ${EBROOTNGS_DEMULTIPLEXING}/combineBarcodes.sh ${sampsheet} ${EBROOTNGS_DEMULTIPLEXING}
+if [ $? == 0 ]
+then
+	
+
+dualBarcode="FALSE"
+
+if [ -f barcode2.isthere ]
+then	
+	dualBarcode="TRUE"
+fi
+#
+#######
+#
 perl ${EBROOTNGS_DEMULTIPLEXING}/convertParametersGitToMolgenis.pl ${EBROOTNGS_DEMULTIPLEXING}/parameters.csv > \
 ${WORKDIR}/generatedscripts/run_${RUNNUMBER}/out.csv
 
@@ -41,6 +66,9 @@ sh $EBROOTMOLGENISMINCOMPUTE/molgenis_compute.sh \
 -p ${WORKDIR}/generatedscripts/run_${RUNNUMBER}/run_${RUNNUMBER}.csv \
 -w ${WORKFLOW} \
 -rundir ${WORKDIR}/runs/run_${RUNNUMBER}/jobs \
+-o "dualBarcode=${dualBarcode}" \
 -b slurm \
 -weave \
 --generate
+
+fi
