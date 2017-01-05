@@ -3,7 +3,7 @@
 #string runResultsDir
 #string intermediateDir
 #string seqType
-#list barcode
+#list barcode_combined
 #string filenamePrefix
 #string compressedDemultiplexedDiscardedFastqFilenameSR
 #string compressedDemultiplexedDiscardedFastqFilenamePE1
@@ -64,8 +64,8 @@ _count_reads() {
 		longest_read_count_length=${#_reads}
 	fi
 
-	if [ ${#barcode} -gt ${longest_barcode_length} ]; then
-		longest_barcode_length=${#barcode}
+	if [ ${#_barcode} -gt ${longest_barcode_length} ]; then
+		longest_barcode_length=${#_barcode}
 	fi
 	eval "$3=${_reads}"
 }
@@ -109,7 +109,7 @@ fluxDir=${MC_tmpFile}
 #
 if [ "$seqType" == "SR" ]
 then
-	if [[ "${barcode[0]}" == "None" || "${barcode[0]}" == "" ]]
+	if [[ "${barcode_combined[0]}" == "None" || "${barcode_combined[0]}" == "" ]]
 	then
 		# No barcodes used in this lane: Do nothing.
 		touch ${fluxDir}/${filenamePrefix}.demultiplex.read_count_check.skipped
@@ -143,7 +143,7 @@ then
 		((n_elements=${#compressedDemultiplexedSampleFastqFilenameSR[@]}, max_index=n_elements - 1))
 		for ((fileToCheck = 0; fileToCheck <= max_index; fileToCheck++))
 		do
-			barcodeR=${barcode[fileToCheck]}
+			barcodeR=${barcode_combined[fileToCheck]}
 			fastq=${runResultsDir}/${compressedDemultiplexedSampleFastqFilenameSR[fileToCheck]}
 			declare -i reads=-1
 			_count_reads ${fastq} ${barcodeR} 'reads'
@@ -158,7 +158,7 @@ then
 
 elif [ "$seqType" == "PE" ]
 then
-	if [[ "${barcode[0]}" == "None" || "${barcode[0]}" == "" ]]
+	if [[ "${barcode_combined[0]}" == "None" || "${barcode_combined[0]}" == "" ]]
 	then
 		#
 		# No barcodes used in this lane: Do nothing.
@@ -195,7 +195,7 @@ then
 		_count_reads ${fastq_2} ${barcodeD} 'reads_2'
 		if (( $reads_1 != $reads_2)); then
 			touch ${fluxDir}/${label}_${barcodeD}.read_count_check_for_pairs.FAILED
-			echo "FATAL: Number of reads in both ${label}_${barcode} FastQ files not the same!"
+			echo "FATAL: Number of reads in both ${label}_${barcode_combined} FastQ files not the same!"
 			exit 1
 		fi
 		read_pair_counts=(${read_pair_counts[@]-} ${barcodeD}:${reads_1})
@@ -204,7 +204,7 @@ then
 		((n_elements=${#compressedDemultiplexedSampleFastqFilenamePE1[@]}, max_index=n_elements - 1))
 		for ((fileToCheck = 0; fileToCheck <= max_index; fileToCheck++))
 		do
-		barcodeR=${barcode[fileToCheck]}
+		barcodeR=${barcode_combined[fileToCheck]}
 		fastq_1=${runResultsDir}/${compressedDemultiplexedSampleFastqFilenamePE1[fileToCheck]}
 		fastq_2=${runResultsDir}/${compressedDemultiplexedSampleFastqFilenamePE2[fileToCheck]}
 		reads_1=-1
@@ -213,7 +213,7 @@ then
 		_count_reads ${fastq_2} ${barcodeR} 'reads_2'
 		if (( $reads_1 != $reads_2)); then
 			touch ${fluxDir}/${label}_${barcodeR}.read_count_check_for_pairs.FAILED
-			echo "FATAL: Number of reads in both ${label}_${barcode} FastQ files not the same!"
+			echo "FATAL: Number of reads in both ${label}_${barcode_combined} FastQ files not the same!"
 			exit 1
 		fi
 		read_pair_counts=(${read_pair_counts[@]-} ${barcodeR}:${reads_1})

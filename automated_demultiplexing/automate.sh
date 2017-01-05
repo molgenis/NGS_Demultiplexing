@@ -126,17 +126,32 @@ do
 				echo "Copied ${EBROOTNGS_DEMULTIPLEXING}/generate_template.sh to ." >> ${LOGGERPIPELINE}
 				echo "" >> ${LOGGERPIPELINE}
 
-				### Generating scripts
-				echo "Generated scripts" >> ${LOGGERPIPELINE}
-				sh generate_template.sh ${sequencer} ${run} ${WORKDIR} ${GROUP} 2>&1 >> ${LOGGERPIPELINE}
-				echo "cd ${WORKDIR}/runs/${RUNFOLDER}/jobs" >> ${LOGGERPIPELINE}
-				cd ${WORKDIR}/runs/${RUNFOLDER}/jobs
 
-				sh submit.sh
-				echo "jobs submitted, pipeline is running" >> ${LOGGERPIPELINE}
-                      		touch ${LOGSDIR}/${PROJECTNAME}_Demultiplexing.started
-				echo "De demultiplexing pipeline is gestart, over een aantal uren zal dit klaar zijn \
-				en word de data automatisch naar zinc-finger gestuurd, hierna  word de pipeline gestart" | mail -s "Het demultiplexen van ${PROJECTNAME} is gestart op (`date +%d/%m/%Y` `date +%H:%M`)" ${ONTVANGER}
+				### Generating scripts
+                                echo "Generated scripts" >> ${LOGGERPIPELINE}
+                                sh generate_template.sh ${sequencer} ${run} ${WORKDIR} ${GROUP} 2>&1 >> ${LOGGERPIPELINE}
+                                
+				check=$(tail -1 $LOGGERPIPELINE)
+				if [[ $check == *"WRONG"* ]]
+				then 	
+					echo "there is something wrong, EXIT"
+					echo "###"
+					echo "### Here comes the last three lines of the logger:"
+					tail -3 ${LOGGERPIPELINE}
+					echo "###"
+					echo "###"
+					exit 1 
+				fi
+                                echo "cd ${WORKDIR}/runs/${RUNFOLDER}/jobs" >> ${LOGGERPIPELINE}
+                                cd ${WORKDIR}/runs/${RUNFOLDER}/jobs
+
+                                sh submit.sh
+                                echo "jobs submitted, pipeline is running" >> ${LOGGERPIPELINE}
+                                touch ${LOGSDIR}/${PROJECTNAME}_Demultiplexing.started
+                                echo "De demultiplexing pipeline is gestart, over een aantal uren zal dit klaar zijn \
+                                en word de data automatisch naar zinc-finger gestuurd, hierna  word de pipeline gestart" | mail -s "Het demultiplexen van ${PROJECTNAME} is gestart op (`date +%d/%m/%Y` `date +%H:%M`)" ${ONTVANGER}
+
+
 			fi
                 fi
 	fi
