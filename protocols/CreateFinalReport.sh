@@ -17,8 +17,4 @@ ${createPerSampleFinalReportPl} \
 -r ${run} \
 -s ${sampleSheet}
 
-perl -p -e 's|,barcode,|,barcode_old,|' ${sampleSheet} > ${sampleSheet}.tmp1
-
-perl -pi -e 's|,barcode_combined,|,barcode,|' ${sampleSheet}.tmp1 > ${sampleSheet}.tmp2
-
-echo "mv ${sampleSheet}.tmp2 ${sampleSheet}"
+echo "final report created"
