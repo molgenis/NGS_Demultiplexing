@@ -64,8 +64,8 @@ _count_reads() {
 		longest_read_count_length=${#_reads}
 	fi
 
-	if [ ${#barcode} -gt ${longest_barcode_length} ]; then
-		longest_barcode_length=${#barcode}
+	if [ ${#_barcode} -gt ${longest_barcode_length} ]; then
+		longest_barcode_length=${#_barcode}
 	fi
 	eval "$3=${_reads}"
 }
@@ -195,7 +195,7 @@ then
 		_count_reads ${fastq_2} ${barcodeD} 'reads_2'
 		if (( $reads_1 != $reads_2)); then
 			touch ${fluxDir}/${label}_${barcodeD}.read_count_check_for_pairs.FAILED
-			echo "FATAL: Number of reads in both ${label}_${barcode} FastQ files not the same!"
+			echo "FATAL: Number of reads in both ${label}_${barcode_combined} FastQ files not the same!"
 			exit 1
 		fi
 		read_pair_counts=(${read_pair_counts[@]-} ${barcodeD}:${reads_1})

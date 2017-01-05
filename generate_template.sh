@@ -30,45 +30,44 @@ fi
 #
 ###### Dual barcode checker
 #
-
 sampsheet=${WORKDIR}/generatedscripts/run_${RUNNUMBER}/run_${RUNNUMBER}.csv
-perl -pi -e 's/\r(?!\n)//g' ${sampsheet}
+
 mac2unix ${sampsheet}
+
 rm -f barcode2.isthere
+
 ## Will return or nothing or in case there is a dualbarcode it will create a file
 sh ${EBROOTNGS_DEMULTIPLEXING}/combineBarcodes.sh ${sampsheet} ${EBROOTNGS_DEMULTIPLEXING}
 if [ $? == 0 ]
 then
-	
+	dualBarcode="FALSE"
 
-dualBarcode="FALSE"
+	if [ -f barcode2.isthere ]
+	then	
+		dualBarcode="TRUE"
+	fi
+	#
+	#######
+	#
+	perl ${EBROOTNGS_DEMULTIPLEXING}/convertParametersGitToMolgenis.pl ${EBROOTNGS_DEMULTIPLEXING}/parameters.csv > \
+	${WORKDIR}/generatedscripts/run_${RUNNUMBER}/out.csv
 
-if [ -f barcode2.isthere ]
-then	
-	dualBarcode="TRUE"
-fi
-#
-#######
-#
-perl ${EBROOTNGS_DEMULTIPLEXING}/convertParametersGitToMolgenis.pl ${EBROOTNGS_DEMULTIPLEXING}/parameters.csv > \
-${WORKDIR}/generatedscripts/run_${RUNNUMBER}/out.csv
+	perl ${EBROOTNGS_DEMULTIPLEXING}/convertParametersGitToMolgenis.pl ${EBROOTNGS_DEMULTIPLEXING}/${ENVIRONMENT_PARAMETERS} > \
+	${WORKDIR}/generatedscripts/run_${RUNNUMBER}/environment_parameters.csv
 
-perl ${EBROOTNGS_DEMULTIPLEXING}/convertParametersGitToMolgenis.pl ${EBROOTNGS_DEMULTIPLEXING}/${ENVIRONMENT_PARAMETERS} > \
-${WORKDIR}/generatedscripts/run_${RUNNUMBER}/environment_parameters.csv
+	perl ${EBROOTNGS_DEMULTIPLEXING}/convertParametersGitToMolgenis.pl ${EBROOTNGS_DEMULTIPLEXING}/parameters_${GROUP}.csv > \
+	${WORKDIR}/generatedscripts/run_${RUNNUMBER}/parameters_group.csv
 
-perl ${EBROOTNGS_DEMULTIPLEXING}/convertParametersGitToMolgenis.pl ${EBROOTNGS_DEMULTIPLEXING}/parameters_${GROUP}.csv > \
-${WORKDIR}/generatedscripts/run_${RUNNUMBER}/parameters_group.csv
-
-sh $EBROOTMOLGENISMINCOMPUTE/molgenis_compute.sh \
--p ${WORKDIR}/generatedscripts/run_${RUNNUMBER}/out.csv \
--p ${WORKDIR}/generatedscripts/run_${RUNNUMBER}/parameters_group.csv \
--p ${WORKDIR}/generatedscripts/run_${RUNNUMBER}/environment_parameters.csv \
--p ${WORKDIR}/generatedscripts/run_${RUNNUMBER}/run_${RUNNUMBER}.csv \
--w ${WORKFLOW} \
--rundir ${WORKDIR}/runs/run_${RUNNUMBER}/jobs \
--o "dualBarcode=${dualBarcode}" \
--b slurm \
--weave \
---generate
+	sh $EBROOTMOLGENISMINCOMPUTE/molgenis_compute.sh \
+	-p ${WORKDIR}/generatedscripts/run_${RUNNUMBER}/out.csv \
+	-p ${WORKDIR}/generatedscripts/run_${RUNNUMBER}/parameters_group.csv \
+	-p ${WORKDIR}/generatedscripts/run_${RUNNUMBER}/environment_parameters.csv \
+	-p ${WORKDIR}/generatedscripts/run_${RUNNUMBER}/run_${RUNNUMBER}.csv \
+	-w ${WORKFLOW} \
+	-rundir ${WORKDIR}/runs/run_${RUNNUMBER}/jobs \
+	-o "dualBarcode=${dualBarcode}" \
+	-b slurm \
+	-weave \
+	--generate
 
 fi

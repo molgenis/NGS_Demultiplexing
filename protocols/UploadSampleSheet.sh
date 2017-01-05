@@ -4,16 +4,14 @@
 #string workDir
 #string runPrefix
 #string runResultsDir
+#string dualBarcode
+#string intermediateDir
+#string generatedScriptsDir
 
 WHOAMI=$(whoami)
 . /home/$WHOAMI/molgenis.cfg
 
-
 echo "Importing Samplesheet into ${MOLGENISSERVER}"
-
-cp ${sampleSheet} ${MCsampleSheet} 
-cp ${sampleSheet} ${runResultsDir}${runPrefix}.csv
-chmod u+rw,u-x,g+r,g-wx,o-rwx ${runResultsDir}/${runPrefix}*
 
 group=""
 
@@ -26,9 +24,26 @@ then
 else
 	group="other"
 fi
+if [ "${dualBarcode}" == "TRUE" ]
+then
+	echo "dual barcode MODE: copied samplesheet to ${workDir}/Samplesheets/${runPrefix}.csv.original"
+	cp ${workDir}/Samplesheets/${runPrefix}.csv ${workDir}/Samplesheets/${runPrefix}.csv.original
+fi
+if [ ! -f ${generatedScriptsDir}/${runPrefix}.samplesheetConverted ]
+then
+	perl -pi -e 's|,barcode,|,barcode1,|' ${sampleSheet} 
+	perl -pi -e 's|,barcode_combined|,barcode|' ${sampleSheet} 
+	touch ${generatedScriptsDir}/${runPrefix}.samplesheetConverted
+fi
 
-mac2unix ${MCsampleSheet}
+if [ "${dualBarcode}" == "TRUE" ]
+then
+	cp ${sampleSheet} ${workDir}/Samplesheets/${runPrefix}.csv 
+fi
 
+cp ${sampleSheet} ${MCsampleSheet} 
+cp ${sampleSheet} ${runResultsDir}/${runPrefix}.csv
+chmod u+rw,u-x,g+r,g-wx,o-rwx ${runResultsDir}/${runPrefix}*
 
 HEADER=$(head -1 ${MCsampleSheet})
 OLDIFS=$IFS
@@ -64,3 +79,5 @@ else
 	echo "samplesheet already uploaded to ${MOLGENISSERVER}"
 
 fi
+
+touch ${workDir}/logs/${runPrefix}_Demultiplexing.finished
