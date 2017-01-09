@@ -41,8 +41,8 @@ sh ${EBROOTNGS_DEMULTIPLEXING}/combineBarcodes.sh ${sampsheet} ${EBROOTNGS_DEMUL
 if [ $? == 0 ]
 then
 	dualBarcode="FALSE"
-
-	if [ -f barcode2.isthere ]
+	
+	if [ -f barcode2.is.there ]
 	then	
 		dualBarcode="TRUE"
 	fi
