@@ -4,7 +4,7 @@ import csv
 tel=0
 reader = csv.DictReader(open(sys.argv[1], "rb"), delimiter=",")
 
-barcode2file='sys.argv[2]/barcode2.is.there'
+barcode2file=sys.argv[2]+'/barcode2.is.there'
 for row in reader:
         for (k,v) in row.items():
                 if tel == 0:
