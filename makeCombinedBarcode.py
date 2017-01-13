@@ -6,28 +6,28 @@ reader = csv.DictReader(open(sys.argv[1], "rb"), delimiter=",")
 
 barcode2file=sys.argv[2]+'/barcode2.is.there'
 for row in reader:
-        for (k,v) in row.items():
+        for (kolom,value) in row.items():
+		v=value.strip()
                 if tel == 0:
                         sys.stdout.write("barcode_combined\n")
                         tel=tel+1
                 if "barcode2" in row:
-			open(barcode2file, 'a').close()
-                        if k == "barcode":
+                        if kolom == "barcode":
                                 if "-" not in v:
-                                        if v != "None" or v != "none" or v == "":
+                                        if v.lower() != "none" and v != "":
                                                 sys.stdout.write(v + "-")
                                 else:
                                      	print "wrong"
                                         sys.exit()
-                        if k == "barcode2":
-                                if v != "None" or v != "none" or v == "":
+                        if kolom == "barcode2":
+                                if v.lower() != "none" and v != "":
                                         sys.stdout.write(v + "\n")
+					open(barcode2file, 'a').close()
                 else:
-                     	if k == "barcode":
+                     	if kolom == "barcode":
                                 if "-" not in v:
-                                        if v != "None" or v != "none" or v == "":
+                                        if v.lower() != "none" and v != "":
                                                 sys.stdout.write(v + "\n")
                                 else:
                                      	print "wrong"
                                         sys.exit()
-
