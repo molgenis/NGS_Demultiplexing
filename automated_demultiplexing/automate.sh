@@ -90,7 +90,7 @@ do
 			then
 				cat  ${DEBUGGER}.error | mail -s "Samplesheet error ${PROJECTNAME}" ${ONTVANGER}
 				rm ${DEBUGGER}.error
-				exit 1
+				break
 			else
 				echo  "Samplesheet is OK" >> ${DEBUGGER}
 				#####
