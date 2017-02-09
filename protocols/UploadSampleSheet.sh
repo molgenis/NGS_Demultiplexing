@@ -38,7 +38,7 @@ fi
 
 if [ "${dualBarcode}" == "TRUE" ]
 then
-	cp ${sampleSheet} ${workDir}/Samplesheets/${runPrefix}.csv 
+	cp -f ${sampleSheet} ${workDir}/Samplesheets/${runPrefix}.csv 
 fi
 
 cp ${sampleSheet} ${MCsampleSheet} 
