@@ -10,7 +10,7 @@ var=$(tail -1 barcode_combined.txt)
 
 if [ "${var}" == "wrong" ]
 then
-	echo "barcode should be splitted into 2 columns first"
+	echo "barcode should be splitted into 2 columns first OR barcode_combined already exists in header (file = corrupt)"
 	exit
 else
 	paste -d, $csvFile barcode_combined.txt > $csvFile.tmp
