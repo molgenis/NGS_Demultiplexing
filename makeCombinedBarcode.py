@@ -8,8 +8,6 @@ reader = csv.DictReader(open(sys.argv[1], "rb"), delimiter=",")
 columns = defaultdict(list)
 barcode2file=sys.argv[2]+'/barcode2.is.there'
 
-text_file = open(barcodeBreak, "w")
-
 my_list = list()
 my_list2 = list()
 for row in reader:
