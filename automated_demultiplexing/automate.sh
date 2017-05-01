@@ -85,7 +85,6 @@ do
 		SAMPLESHEETSDIR=${WORKDIR}/Samplesheets
 		DEBUGGER=${LOGSDIR}/${PROJECTNAME}_logger.txt
 		### Check if the demultiplexing is already started
-		echo "${PROJECTNAME}"
 		if [ ! -f ${LOGSDIR}/${PROJECTNAME}_Demultiplexing.started ]
 		then
 			rm -f ${DEBUGGER}.error
