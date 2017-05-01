@@ -39,9 +39,6 @@ for number, row in enumerate(reader,1):   # iterates the rows of the file in ord
                                                 print("The variable " + sleutel + " on line " + str(number) +  " is empty! in "+ args.input)
                                                 w.write("The variable " + sleutel + " on line " + str(number) +  " is empty!")
                                                 alreadyErrored="true"
-                        w.close()
-
-
 
 if not hasRows:
         print("The complete file is empty?! in "+ args.input)
