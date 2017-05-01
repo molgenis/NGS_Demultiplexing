@@ -20,8 +20,10 @@ fi
 GROUP=""
 ### Sequencer is writing to this location: $NEXTSEQDIR
 ### Looping through to see if all files
+echo "ls -1 -d ${NEXTSEQDIR}/*/"
 for i in $(ls -1 -d ${NEXTSEQDIR}/*/)
 do
+
 	## PROJECTNAME is sequencingStartDate_sequencer_run_flowcell
 	PROJECTNAME=$(basename ${i})
 	OLDIFS=$IFS
@@ -30,6 +32,7 @@ do
 	sequencer=$2
 	run=$3
 	IFS=$OLDIFS
+	echo "working on ${PROJECTNAME}"
 
 	miSeqCompleted="no"
 
@@ -38,10 +41,10 @@ do
         then
             	miSeqCompleted="yes"
         fi
-
 	## Check if there the run is already completed
 	if [[ -f ${NEXTSEQDIR}/${PROJECTNAME}/RunCompletionStatus.xml || "${miSeqCompleted}" == "yes" ]]
 	then
+
 		##Check if it is a GAF or GD run
 		if [ -f "${ROOTDIR}/umcg-gaf/${SCRATCHDIR}/Samplesheets/${PROJECTNAME}.csv" ]
 		then
@@ -82,12 +85,14 @@ do
 		SAMPLESHEETSDIR=${WORKDIR}/Samplesheets
 		DEBUGGER=${LOGSDIR}/${PROJECTNAME}_logger.txt
 		### Check if the demultiplexing is already started
-		
+		echo "${PROJECTNAME}"
 		if [ ! -f ${LOGSDIR}/${PROJECTNAME}_Demultiplexing.started ]
 		then
+			rm -f ${DEBUGGER}.error
 			python ${EBROOTNGS_DEMULTIPLEXING}/automated_demultiplexing/checkSampleSheet.py --input ${SAMPLESHEETSDIR}/${PROJECTNAME}.csv --logfile ${DEBUGGER}.error
-			if [ $? == 1 ]
+			if [ -f ${DEBUGGER}.error ]
 			then
+				echo "${PROJECTNAME} skipped"
 				cat  ${DEBUGGER}.error | mail -s "Samplesheet error ${PROJECTNAME}" ${ONTVANGER}
 				rm ${DEBUGGER}.error
 				break
