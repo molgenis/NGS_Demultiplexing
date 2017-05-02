@@ -12,6 +12,8 @@
 #string prepKitsDir
 #string ngsUtilsVersion
 #string dualBarcode
+#string barcodeType
+#string seqType
 
 ${stage} ${bcl2fastqVersion}
 ${stage} ${ngsUtilsVersion}
@@ -74,11 +76,30 @@ else
 fi
 mv ${tmpIntermediateDir}/Illumina_R${run}.csv ${intermediateDir}/Illumina_R${run}.csv
 
-bcl2fastq \
---runfolder-dir ${nextSeqRunDataDir} \
---output-dir ${tmpIntermediateDir} \
---mask-short-adapter-reads 10 \
---sample-sheet ${intermediateDir}/Illumina_R${run}.csv 
+if  [ ${seqType} == "PE" ]; then 
+	baseMask='y*,i8y*,y*'
+else
+        baseMask='y*,i8y*'
+fi
 
+
+#test for umi with 
+if  [ ${barcodeType} == "NG" ]; then
+    	bcl2fastq \
+         --runfolder-dir ${nextSeqRunDataDir} \
+         --output-dir ${tmpIntermediateDir} \
+         --mask-short-adapter-reads 10 \
+         --sample-sheet ${intermediateDir}/Illumina_R${run}.csv
+	 --use-bases-mask ${baseMask} \
+	 --barcode-mismatches 1 \
+	 --minimum-trimmed-read-length 0 \
+	 --create-fastq-for-index-reads	
+else
+	bcl2fastq \
+	 --runfolder-dir ${nextSeqRunDataDir} \
+	 --output-dir ${tmpIntermediateDir} \
+	 --mask-short-adapter-reads 10 \
+	 --sample-sheet ${intermediateDir}/Illumina_R${run}.csv 
+fi
 mv ${tmpIntermediateDir}/* ${intermediateDir}
 echo "moved ${tmpIntermediateDir}/* ${intermediateDir}"
