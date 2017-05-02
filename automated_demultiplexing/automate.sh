@@ -89,7 +89,7 @@ do
 		then
 			rm -f ${DEBUGGER}.error
 			python ${EBROOTNGS_DEMULTIPLEXING}/automated_demultiplexing/checkSampleSheet.py --input ${SAMPLESHEETSDIR}/${PROJECTNAME}.csv --logfile ${DEBUGGER}.error
-			if [ -f ${DEBUGGER}.error ]
+			if [ -s ${DEBUGGER}.error ]
 			then
 				echo "${PROJECTNAME} skipped"
 				cat  ${DEBUGGER}.error | mail -s "Samplesheet error ${PROJECTNAME}" ${ONTVANGER}
