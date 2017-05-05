@@ -88,7 +88,7 @@ if  [ ${barcodeType} == "NG" ]; then
     	bcl2fastq \
          --runfolder-dir ${nextSeqRunDataDir} \
          --output-dir ${tmpIntermediateDir} \
-         --mask-short-adapter-reads 10 \
+         --mask-short-adapter-reads 5 \
          --sample-sheet ${intermediateDir}/Illumina_R${run}.csv
 	 --use-bases-mask ${baseMask} \
 	 --barcode-mismatches 1 \
