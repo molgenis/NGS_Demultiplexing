@@ -159,7 +159,7 @@ do
 				printf "project,group,demultiplexing,copy_data,which_pipeline,copy_prm\n" > ${LOGSDIR}/${PROJECTNAME}_uploading.csv
 				printf "${PROJECTNAME},${GROUP},started,,," >> ${LOGSDIR}/${PROJECTNAME}_uploading.csv
 
-				CURLRESPONSE=$(curl -H "Content-Type: application/json" -X POST -d "{"username"="${USERNAME}", "password"="${PASSWORD}"}" https://molgenis06.gcc.rug.nl/api/v1/login)
+				CURLRESPONSE=$(curl -H "Content-Type: application/json" -X POST -d "{"username"="${USERNAME}", "password"="${PASSWORD}"}" https://${MOLGENISSERVER}/api/v1/login)
 				TOKEN=${CURLRESPONSE:10:32}
 
 				curl -H "x-molgenis-token:${TOKEN}" -X POST -F"file=@${LOGSDIR}/${PROJECTNAME}_uploading.csv" -FentityName='TEST_GCC_pipelines' -Faction=add -Fnotify=false https://${MOLGENISSERVER}/plugin/importwizard/importFile
