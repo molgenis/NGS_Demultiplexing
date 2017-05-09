@@ -17,6 +17,9 @@ else
 	echo $myhost
 	. ${MYINSTALLATIONDIR}/${myhost}.cfg
 fi
+WHOAMI=$(whoami)
+. /home/$WHOAMI/molgenis.cfg
+
 GROUP=""
 ### Sequencer is writing to this location: $NEXTSEQDIR
 ### Looping through to see if all files
@@ -100,7 +103,7 @@ do
 				#####
 				## RUN PIPELINE PART ##
 				#####
-				RUNFOLDER="run_${run}_${sequencer}"
+				RUNFOLDER="${PROJECTNAME}"
 				LOGGERPIPELINE=${WORKDIR}/generatedscripts/${RUNFOLDER}/logger.txt
 				echo "All checks are done. Logging from now on can be found: ${LOGGERPIPELINE}" >> ${DEBUGGER}
 
@@ -123,8 +126,8 @@ do
 				cd ${WORKDIR}/generatedscripts/${RUNFOLDER}/
 
 				## Copy generate script and samplesheet
-				cp ${SAMPLESHEETSDIR}/${PROJECTNAME}.csv run_${run}_${sequencer}.csv
-				echo "copied ${SAMPLESHEETSDIR}/${PROJECTNAME}.csv to run_${run}_${sequencer}.csv" >> ${LOGGERPIPELINE}
+				cp ${SAMPLESHEETSDIR}/${PROJECTNAME}.csv ${PROJECTNAME}.csv 
+				echo "copied ${SAMPLESHEETSDIR}/${PROJECTNAME}.csv to ${PROJECTNAME}.csv" >> ${LOGGERPIPELINE}
 
                        		cp ${EBROOTNGS_DEMULTIPLEXING}/generate_template.sh ./
 				echo "Copied ${EBROOTNGS_DEMULTIPLEXING}/generate_template.sh to ." >> ${LOGGERPIPELINE}
@@ -133,7 +136,7 @@ do
 
 				### Generating scripts
                                 echo "Generated scripts" >> ${LOGGERPIPELINE}
-                                sh generate_template.sh ${sequencer} ${run} ${WORKDIR} ${GROUP} 2>&1 >> ${LOGGERPIPELINE}
+                                sh generate_template.sh ${PROJECTNAME} ${WORKDIR} ${GROUP} 2>&1 >> ${LOGGERPIPELINE}
                                 
 				check=$(tail -1 $LOGGERPIPELINE)
 				if [[ $check == *"WRONG"* ]]
@@ -152,7 +155,16 @@ do
                                 sh submit.sh
                                 echo "jobs submitted, pipeline is running" >> ${LOGGERPIPELINE}
                                 touch ${LOGSDIR}/${PROJECTNAME}_Demultiplexing.started
-                                echo "De demultiplexing pipeline is gestart, over een aantal uren zal dit klaar zijn \
+				
+				printf "project,group,demultiplexing,copy_data,which_pipeline,copy_prm\n" > ${LOGSDIR}/${PROJECTNAME}_uploading.csv
+				printf "${PROJECTNAME},${GROUP},started,,," >> ${LOGSDIR}/${PROJECTNAME}_uploading.csv
+
+				CURLRESPONSE=$(curl -H "Content-Type: application/json" -X POST -d "{"username"="${USERNAME}", "password"="${PASSWORD}"}" https://molgenis06.gcc.rug.nl/api/v1/login)
+				TOKEN=${CURLRESPONSE:10:32}
+
+				curl -H "x-molgenis-token:${TOKEN}" -X POST -F"file=@${LOGSDIR}/${PROJECTNAME}_uploading.csv" -FentityName='TEST_GCC_pipelines' -Faction=add -Fnotify=false https://${MOLGENISSERVER}/plugin/importwizard/importFile
+                                
+				echo "De demultiplexing pipeline is gestart, over een aantal uren zal dit klaar zijn \
                                 en word de data automatisch naar zinc-finger gestuurd, hierna  word de pipeline gestart" | mail -s "Het demultiplexen van ${PROJECTNAME} is gestart op (`date +%d/%m/%Y` `date +%H:%M`)" ${ONTVANGER}
 
 

@@ -2,17 +2,16 @@
 set -e 
 set -u
 
-##external call with 3 arguments (sequencer, run and workDir)
+##external call with 3 arguments (rawdataName, group and workDir)
 
 module list
 
 ENVIRONMENT_PARAMETERS=parameters_gattaca.csv
-SEQUENCER=$1
-RUNNUMBER=${2}_${SEQUENCER}
-WORKDIR=$3
-GROUP=$4
+RAWDATANAME=${1}
+WORKDIR=$2
+GROUP=$3
 WORKFLOW=${EBROOTNGS_DEMULTIPLEXING}/workflow.csv
-echo "$WORKDIR AND $RUNNUMBER"
+echo "$WORKDIR AND $RAWDATANAME"
 echo "GROUPIE: $GROUP"
 
 if [ -f .compute.properties ];
@@ -20,17 +19,17 @@ then
      rm .compute.properties
 fi
 
-mkdir -p ${WORKDIR}/generatedscripts/run_${RUNNUMBER}/
+mkdir -p ${WORKDIR}/generatedscripts/${RAWDATANAME}/
 
-if [ -f ${WORKDIR}/generatedscripts/run_${RUNNUMBER}/out.csv  ];
+if [ -f ${WORKDIR}/generatedscripts/${RAWDATANAME}/out.csv  ];
 then
-    	rm -rf ${WORKDIR}/generatedscripts/run_${RUNNUMBER}/out.csv
+    	rm -rf ${WORKDIR}/generatedscripts/${RAWDATANAME}/out.csv
 fi
 
 #
 ###### Dual barcode checker
 #
-sampsheet=${WORKDIR}/generatedscripts/run_${RUNNUMBER}/run_${RUNNUMBER}.csv
+sampsheet=${WORKDIR}/generatedscripts/${RAWDATANAME}/${RAWDATANAME}.csv
 
 mac2unix ${sampsheet}
 
@@ -50,21 +49,21 @@ then
 	#######
 	#
 	perl ${EBROOTNGS_DEMULTIPLEXING}/convertParametersGitToMolgenis.pl ${EBROOTNGS_DEMULTIPLEXING}/parameters.csv > \
-	${WORKDIR}/generatedscripts/run_${RUNNUMBER}/out.csv
+	${WORKDIR}/generatedscripts/${RAWDATANAME}/out.csv
 
 	perl ${EBROOTNGS_DEMULTIPLEXING}/convertParametersGitToMolgenis.pl ${EBROOTNGS_DEMULTIPLEXING}/${ENVIRONMENT_PARAMETERS} > \
-	${WORKDIR}/generatedscripts/run_${RUNNUMBER}/environment_parameters.csv
+	${WORKDIR}/generatedscripts/${RAWDATANAME}/environment_parameters.csv
 
 	perl ${EBROOTNGS_DEMULTIPLEXING}/convertParametersGitToMolgenis.pl ${EBROOTNGS_DEMULTIPLEXING}/parameters_${GROUP}.csv > \
-	${WORKDIR}/generatedscripts/run_${RUNNUMBER}/parameters_group.csv
+	${WORKDIR}/generatedscripts/${RAWDATANAME}/parameters_group.csv
 
 	sh $EBROOTMOLGENISMINCOMPUTE/molgenis_compute.sh \
-	-p ${WORKDIR}/generatedscripts/run_${RUNNUMBER}/out.csv \
-	-p ${WORKDIR}/generatedscripts/run_${RUNNUMBER}/parameters_group.csv \
-	-p ${WORKDIR}/generatedscripts/run_${RUNNUMBER}/environment_parameters.csv \
-	-p ${WORKDIR}/generatedscripts/run_${RUNNUMBER}/run_${RUNNUMBER}.csv \
+	-p ${WORKDIR}/generatedscripts/${RAWDATANAME}/out.csv \
+	-p ${WORKDIR}/generatedscripts/${RAWDATANAME}/parameters_group.csv \
+	-p ${WORKDIR}/generatedscripts/${RAWDATANAME}/environment_parameters.csv \
+	-p ${WORKDIR}/generatedscripts/${RAWDATANAME}/${RAWDATANAME}.csv \
 	-w ${WORKFLOW} \
-	-rundir ${WORKDIR}/runs/run_${RUNNUMBER}/jobs \
+	-rundir ${WORKDIR}/runs/${RAWDATANAME}/jobs \
 	-o "dualBarcode=${dualBarcode}" \
 	-b slurm \
 	-weave \

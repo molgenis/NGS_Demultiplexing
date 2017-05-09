@@ -81,3 +81,11 @@ else
 fi
 
 touch ${workDir}/logs/${runPrefix}_Demultiplexing.finished
+
+printf "project,group,demultiplexing,copy_data,which_pipeline,copy_prm\n" > ${LOGSDIR}/${runPrefix}_uploading.csv
+printf "${runPrefix},${GROUP},finished,,," >> ${LOGSDIR}/${runPrefix}_uploading.csv
+
+CURLRESPONSE=$(curl -H "Content-Type: application/json" -X POST -d "{"username"="${USERNAME}", "password"="${PASSWORD}"}" https://molgenis06.gcc.rug.nl/api/v1/login)
+TOKEN=${CURLRESPONSE:10:32}
+
+curl -H "x-molgenis-token:${TOKEN}" -X POST -F"file=@${LOGSDIR}/${runPrefix}_uploading.csv" -FentityName='TEST_GCC_pipelines' -Faction=add -Fnotify=false https://${MOLGENISSERVER}/plugin/importwizard/importFile
