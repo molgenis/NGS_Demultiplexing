@@ -88,4 +88,4 @@ printf "${runPrefix},${GROUP},finished,,," >> ${LOGSDIR}/${runPrefix}_uploading.
 CURLRESPONSE=$(curl -H "Content-Type: application/json" -X POST -d "{"username"="${USERNAME}", "password"="${PASSWORD}"}" https://molgenis06.gcc.rug.nl/api/v1/login)
 TOKEN=${CURLRESPONSE:10:32}
 
-curl -H "x-molgenis-token:${TOKEN}" -X POST -F"file=@${LOGSDIR}/${runPrefix}_uploading.csv" -FentityName='TEST_GCC_pipelines' -Faction=add -Fnotify=false https://${MOLGENISSERVER}/plugin/importwizard/importFile
+curl -H "x-molgenis-token:${TOKEN}" -X POST -F"file=@${LOGSDIR}/${runPrefix}_uploading.csv" -FentityName='TEST_GCC_pipelines' -Faction=update -Fnotify=false https://${MOLGENISSERVER}/plugin/importwizard/importFile
