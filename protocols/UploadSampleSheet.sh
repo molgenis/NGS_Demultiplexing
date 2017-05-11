@@ -83,7 +83,7 @@ fi
 touch ${workDir}/logs/${runPrefix}_Demultiplexing.finished
 
 printf "project,group,demultiplexing,copy_data,which_pipeline,copy_prm\n" > ${intermediateDir}/${runPrefix}_uploading.csv
-printf "${runPrefix},${GROUP},finished,,," >> ${intermediateDir}/${runPrefix}_uploading.csv
+printf "${runPrefix},${group},finished,,," >> ${intermediateDir}/${runPrefix}_uploading.csv
 
 CURLRESPONSE=$(curl -H "Content-Type: application/json" -X POST -d "{"username"="${USERNAME}", "password"="${PASSWORD}"}" https://${MOLGENISSERVER}/api/v1/login)
 TOKEN=${CURLRESPONSE:10:32}
