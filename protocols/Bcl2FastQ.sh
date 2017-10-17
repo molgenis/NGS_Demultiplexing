@@ -31,7 +31,7 @@ fi
 
 if [ ! -d ${intermediateDir} ]
 then
-    	mkdir -p ${intermediateDir}
+	mkdir -p ${intermediateDir}
 fi
 
 if [ -d ${intermediateDir}/Reports ]

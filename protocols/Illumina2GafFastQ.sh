@@ -1,7 +1,7 @@
 #MOLGENIS walltime=12:00:00 nodes=1 ppn=1 mem=5gb
 #string runResultsDir
 #string intermediateDir
-#list internalSampleID
+#list externalSampleID
 #string seqType
 #list barcode_combined
 #list barcodeType
@@ -14,23 +14,23 @@
 
 OLDDIR=$(pwd)
 
-n_elements=${internalSampleID[@]}
-max_index=${#internalSampleID[@]}-1
+n_elements=${externalSampleID[@]}
+max_index=${#externalSampleID[@]}-1
 for ((sampleNumber = 0; sampleNumber <= max_index; sampleNumber++))
 do
 	if [ "${seqType}" == "SR" ]
 	then
-  		if [[ ${barcode_combined[sampleNumber]} == "None" || ${barcodeType[sampleNumber]} == "GAF" ]]
+		if [[ ${barcode_combined[sampleNumber]} == "None" || ${barcodeType[sampleNumber]} == "" ]]
 		then
                         # Process lane FastQ files for lane without barcodes or with GAF barcodes.
 			cd ${intermediateDir}
 
-			md5sum lane${lane}_None_S[0-9]*_L00${lane}_R1_001.fastq.gz >  ${runResultsDir}/${sequencingStartDate}_${sequencer}_${run}_${flowcell}_L${lane}.fq.gz.md5
+			md5sum lane${lane}_None_S[0-9]*_L00${lane}_R1_001.fastq.gz >  "${runResultsDir}/${sequencingStartDate}_${sequencer}_${run}_${flowcell}_L${lane}.fq.gz.md5"
 
-			cp lane${lane}_None_S[0-9]*_L00${lane}_R1_001.fastq.gz ${runResultsDir}/${sequencingStartDate}_${sequencer}_${run}_${flowcell}_L${lane}.fq.gz
+			cp lane${lane}_None_S[0-9]*_L00${lane}_R1_001.fastq.gz "${runResultsDir}/${sequencingStartDate}_${sequencer}_${run}_${flowcell}_L${lane}.fq.gz"
 
-			cd  ${runResultsDir}
-			VAR1=${sequencingStartDate}_${sequencer}_${run}_${flowcell}_L${lane}.fq.gz
+			cd  "${runResultsDir}"
+			VAR1="${sequencingStartDate}_${sequencer}_${run}_${flowcell}_L${lane}.fq.gz"
 			perl -pi -e "s|lane${lane}_None_S[0-9]+_L00${lane}_R1_001.fastq.gz|$VAR1|" $VAR1.md5
 
 			md5sum -c ${sequencingStartDate}_${sequencer}_${run}_${flowcell}_L${lane}.fq.gz
@@ -45,51 +45,51 @@ do
                         perl -pi -e "s|lane${lane}_${barcode_combined[sampleNumber]}_S[0-9]+_L00${lane}_R1_001.fastq.gz|$VAR1|" $VAR1.md5
 
 			md5sum -c ${sequencingStartDate}_${sequencer}_${run}_${flowcell}_L${lane}_${barcode_combined[sampleNumber]}.fq.gz.md5
-	        fi
+	fi
 
 	elif [ "${seqType}" == "PE" ]
 	then
-		if [[ ${barcode_combined[sampleNumber]} == "None" ]]
-    		then
+		if [[ ${barcode_combined[sampleNumber]} == "None" || ${barcode_combined[sampleNumber]} == "" ]]
+		then
 			cd ${intermediateDir}
 			md5sum lane${lane}_None_S[0-9]*_L00${lane}_R1_001.fastq.gz >  ${runResultsDir}/${sequencingStartDate}_${sequencer}_${run}_${flowcell}_L${lane}_1.fq.gz.md5
 			md5sum lane${lane}_None_S[0-9]*_L00${lane}_R2_001.fastq.gz >  ${runResultsDir}/${sequencingStartDate}_${sequencer}_${run}_${flowcell}_L${lane}_2.fq.gz.md5
-	
+
 			cp lane${lane}_None_S[0-9]*_L00${lane}_R1_001.fastq.gz ${runResultsDir}/${sequencingStartDate}_${sequencer}_${run}_${flowcell}_L${lane}_1.fq.gz
 			cp lane${lane}_None_S[0-9]*_L00${lane}_R2_001.fastq.gz ${runResultsDir}/${sequencingStartDate}_${sequencer}_${run}_${flowcell}_L${lane}_2.fq.gz
-	
+
 			cd  ${runResultsDir}
-	
+
 			VAR1=${sequencingStartDate}_${sequencer}_${run}_${flowcell}_L${lane}_1.fq.gz
 			VAR2=${sequencingStartDate}_${sequencer}_${run}_${flowcell}_L${lane}_2.fq.gz
-	
+
 			perl -pi -e "s|lane${lane}_None_S[0-9]+_L00${lane}_R1_001.fastq.gz|$VAR1|" $VAR1.md5
-                	perl -pi -e "s|lane${lane}_None_S[0-9]+_L00${lane}_R2_001.fastq.gz|$VAR2|" $VAR2.md5
-	
+			perl -pi -e "s|lane${lane}_None_S[0-9]+_L00${lane}_R2_001.fastq.gz|$VAR2|" $VAR2.md5
+
 			md5sum -c ${sequencingStartDate}_${sequencer}_${run}_${flowcell}_L${lane}_1.fq.gz.md5
 			md5sum -c ${sequencingStartDate}_${sequencer}_${run}_${flowcell}_L${lane}_2.fq.gz.md5
-	
+
 		###CORRECT BARCODES
-		elif [[ ${barcodeType[sampleNumber]} == "RPI" || ${barcodeType[sampleNumber]} == "BIO" || ${barcodeType[sampleNumber]} == "MON" || ${barcodeType[sampleNumber]} == "AGI" || ${barcodeType[sampleNumber]} == "LEX" || ${barcodeType[sampleNumber]} == "NEX" || ${barcodeType[sampleNumber]} == "AG8" || ${barcodeType[sampleNumber]} == "sRP" ]]
+		else 
 		then
 			cd ${intermediateDir}
 			md5sum lane${lane}_${barcode_combined[sampleNumber]}_S[0-9]*_L00${lane}_R1_001.fastq.gz >  ${runResultsDir}/${sequencingStartDate}_${sequencer}_${run}_${flowcell}_L${lane}_${barcode_combined[sampleNumber]}_1.fq.gz.md5
 			md5sum lane${lane}_${barcode_combined[sampleNumber]}_S[0-9]*_L00${lane}_R2_001.fastq.gz >  ${runResultsDir}/${sequencingStartDate}_${sequencer}_${run}_${flowcell}_L${lane}_${barcode_combined[sampleNumber]}_2.fq.gz.md5
-	
+
 			cp lane${lane}_${barcode_combined[sampleNumber]}_S[0-9]*_L00${lane}_R1_001.fastq.gz  ${runResultsDir}/${sequencingStartDate}_${sequencer}_${run}_${flowcell}_L${lane}_${barcode_combined[sampleNumber]}_1.fq.gz
 			cp lane${lane}_${barcode_combined[sampleNumber]}_S[0-9]*_L00${lane}_R2_001.fastq.gz  ${runResultsDir}/${sequencingStartDate}_${sequencer}_${run}_${flowcell}_L${lane}_${barcode_combined[sampleNumber]}_2.fq.gz
-	
-                	cd  ${runResultsDir}
-	
-                	VAR1=${sequencingStartDate}_${sequencer}_${run}_${flowcell}_L${lane}_${barcode_combined[sampleNumber]}_1.fq.gz
-                	VAR2=${sequencingStartDate}_${sequencer}_${run}_${flowcell}_L${lane}_${barcode_combined[sampleNumber]}_2.fq.gz
-	
-                	perl -pi -e "s|lane${lane}_${barcode_combined[sampleNumber]}_S[0-9]+_L00${lane}_R1_001.fastq.gz|$VAR1|" $VAR1.md5
-                	perl -pi -e "s|lane${lane}_${barcode_combined[sampleNumber]}_S[0-9]+_L00${lane}_R2_001.fastq.gz|$VAR2|" $VAR2.md5
-	
-                	md5sum -c ${sequencingStartDate}_${sequencer}_${run}_${flowcell}_L${lane}_${barcode_combined[sampleNumber]}_1.fq.gz.md5
-                	md5sum -c ${sequencingStartDate}_${sequencer}_${run}_${flowcell}_L${lane}_${barcode_combined[sampleNumber]}_2.fq.gz.md5	
-    		fi
+
+			cd  ${runResultsDir}
+
+			VAR1=${sequencingStartDate}_${sequencer}_${run}_${flowcell}_L${lane}_${barcode_combined[sampleNumber]}_1.fq.gz
+			VAR2=${sequencingStartDate}_${sequencer}_${run}_${flowcell}_L${lane}_${barcode_combined[sampleNumber]}_2.fq.gz
+
+			perl -pi -e "s|lane${lane}_${barcode_combined[sampleNumber]}_S[0-9]+_L00${lane}_R1_001.fastq.gz|$VAR1|" $VAR1.md5
+			perl -pi -e "s|lane${lane}_${barcode_combined[sampleNumber]}_S[0-9]+_L00${lane}_R2_001.fastq.gz|$VAR2|" $VAR2.md5
+
+			md5sum -c ${sequencingStartDate}_${sequencer}_${run}_${flowcell}_L${lane}_${barcode_combined[sampleNumber]}_1.fq.gz.md5
+			md5sum -c ${sequencingStartDate}_${sequencer}_${run}_${flowcell}_L${lane}_${barcode_combined[sampleNumber]}_2.fq.gz.md5	
+		fi
 	fi
 done
 
@@ -100,7 +100,7 @@ then
 	if [ "${seqType}" == "SR" ]
 	then
 		cd ${intermediateDir}
-        	md5sum Undetermined_S[0-9]*_L00${lane}_R1_001.fastq.gz >  ${runResultsDir}/${sequencingStartDate}_${sequencer}_${run}_${flowcell}_L${lane}_DISCARDED.fq.gz.md5
+		md5sum Undetermined_S[0-9]*_L00${lane}_R1_001.fastq.gz >  ${runResultsDir}/${sequencingStartDate}_${sequencer}_${run}_${flowcell}_L${lane}_DISCARDED.fq.gz.md5
 
                 cp Undetermined_S[0-9]*_L00${lane}_R1_001.fastq.gz ${runResultsDir}/${sequencingStartDate}_${sequencer}_${run}_${flowcell}_L${lane}_DISCARDED.fq.gz
 
@@ -114,15 +114,15 @@ then
 	else
         #DISCARDED READS
 		cd ${intermediateDir}
-        	md5sum Undetermined_S[0-9]*_L00${lane}_R1_001.fastq.gz >  ${runResultsDir}/${sequencingStartDate}_${sequencer}_${run}_${flowcell}_L${lane}_DISCARDED_1.fq.gz.md5
-        	md5sum Undetermined_S[0-9]*_L00${lane}_R2_001.fastq.gz >  ${runResultsDir}/${sequencingStartDate}_${sequencer}_${run}_${flowcell}_L${lane}_DISCARDED_2.fq.gz.md5
+		md5sum Undetermined_S[0-9]*_L00${lane}_R1_001.fastq.gz >  ${runResultsDir}/${sequencingStartDate}_${sequencer}_${run}_${flowcell}_L${lane}_DISCARDED_1.fq.gz.md5
+		md5sum Undetermined_S[0-9]*_L00${lane}_R2_001.fastq.gz >  ${runResultsDir}/${sequencingStartDate}_${sequencer}_${run}_${flowcell}_L${lane}_DISCARDED_2.fq.gz.md5
 
-	  	cp Undetermined_S[0-9]*_L00${lane}_R1_001.fastq.gz  ${runResultsDir}/${sequencingStartDate}_${sequencer}_${run}_${flowcell}_L${lane}_DISCARDED_1.fq.gz
+		cp Undetermined_S[0-9]*_L00${lane}_R1_001.fastq.gz  ${runResultsDir}/${sequencingStartDate}_${sequencer}_${run}_${flowcell}_L${lane}_DISCARDED_1.fq.gz
                 cp Undetermined_S[0-9]*_L00${lane}_R2_001.fastq.gz  ${runResultsDir}/${sequencingStartDate}_${sequencer}_${run}_${flowcell}_L${lane}_DISCARDED_2.fq.gz
 
-	        cd  ${runResultsDir}
+		cd  ${runResultsDir}
 
-	        VAR1=${sequencingStartDate}_${sequencer}_${run}_${flowcell}_L${lane}_DISCARDED_1.fq.gz
+		VAR1=${sequencingStartDate}_${sequencer}_${run}_${flowcell}_L${lane}_DISCARDED_1.fq.gz
                 VAR2=${sequencingStartDate}_${sequencer}_${run}_${flowcell}_L${lane}_DISCARDED_2.fq.gz
 
                 perl -pi -e "s|Undetermined_S[0-9]+_L00${lane}_R1_001.fastq.gz|$VAR1|" $VAR1.md5
