@@ -72,7 +72,7 @@ if [ ! -f ${workDir}/logs/${runPrefix}.is.uploaded ]
 then
 	CURLRESPONSE=$(curl -H "Content-Type: application/json" -X POST -d "{"username"="${USERNAME}", "password"="${PASSWORD}"}" https://${MOLGENISSERVER}/api/v1/login)
 	TOKEN=${CURLRESPONSE:10:32}
-	curl -H "x-molgenis-token:${TOKEN}" -X POST -F"file=@${MCsampleSheet}" -Faction=add -Fnotify=false https://${MOLGENISSERVER}/plugin/importwizard/importFile
+	curl -H "x-molgenis-token:${TOKEN}" -X POST -F"file=@${MCsampleSheet}" -FentityName='status_samples' -Faction=add -Fnotify=false https://${MOLGENISSERVER}/plugin/importwizard/importFile
 
 	touch ${workDir}/logs/${runPrefix}.is.uploaded
 else
@@ -82,10 +82,10 @@ fi
 
 touch ${workDir}/logs/${runPrefix}_Demultiplexing.finished
 
-printf "project,group,demultiplexing,copy_data,which_pipeline,copy_prm\n" > ${intermediateDir}/${runPrefix}_uploading.csv
+printf "run_id,group,demultiplexing,copy_raw_prm,projects,date\n" > ${intermediateDir}/${runPrefix}_uploading.csv
 printf "${runPrefix},${group},finished,,," >> ${intermediateDir}/${runPrefix}_uploading.csv
 
 CURLRESPONSE=$(curl -H "Content-Type: application/json" -X POST -d "{"username"="${USERNAME}", "password"="${PASSWORD}"}" https://${MOLGENISSERVER}/api/v1/login)
 TOKEN=${CURLRESPONSE:10:32}
 
-curl -H "x-molgenis-token:${TOKEN}" -X POST -F"file=@${intermediateDir}/${runPrefix}_uploading.csv" -FentityName='TEST_GCC_pipelines' -Faction=update -Fnotify=false https://${MOLGENISSERVER}/plugin/importwizard/importFile
+curl -H "x-molgenis-token:${TOKEN}" -X POST -F"file=@${intermediateDir}/${runPrefix}_uploading.csv" -FentityName='status_overview' -Faction=update -Fnotify=false https://${MOLGENISSERVER}/plugin/importwizard/importFile
