@@ -88,4 +88,4 @@ printf "${runPrefix},${group},finished,,," >> ${intermediateDir}/${runPrefix}_up
 CURLRESPONSE=$(curl -H "Content-Type: application/json" -X POST -d "{"username"="${USERNAME}", "password"="${PASSWORD}"}" https://${MOLGENISSERVER}/api/v1/login)
 TOKEN=${CURLRESPONSE:10:32}
 
-curl -H "x-molgenis-token:${TOKEN}" -X POST -F"file=@${intermediateDir}/${runPrefix}_uploading.csv" -FentityTypeId='status_overview' -Faction=add -Fnotify=false https://${MOLGENISSERVER}/plugin/importwizard/importFile
+curl -H "x-molgenis-token:${TOKEN}" -X POST -F"file=@${intermediateDir}/${runPrefix}_uploading.csv" -FentityTypeId='status_overview' -Faction=update -Fnotify=false https://${MOLGENISSERVER}/plugin/importwizard/importFile
