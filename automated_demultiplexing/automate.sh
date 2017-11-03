@@ -162,7 +162,7 @@ do
 				CURLRESPONSE=$(curl -H "Content-Type: application/json" -X POST -d "{"username"="${USERNAME}", "password"="${PASSWORD}"}" https://${MOLGENISSERVER}/api/v1/login)
 				TOKEN=${CURLRESPONSE:10:32}
 
-				curl -H "x-molgenis-token:${TOKEN}" -X POST -F"file=@${LOGSDIR}/${PROJECTNAME}_uploading.csv" -FentityName='status_overview' -Faction=add -Fnotify=false https://${MOLGENISSERVER}/plugin/importwizard/importFile
+				curl -H "x-molgenis-token:${TOKEN}" -X POST -F"file=@${LOGSDIR}/${PROJECTNAME}_uploading.csv" -FentityTypeId='status_overview' -Faction=add -Fnotify=false https://${MOLGENISSERVER}/plugin/importwizard/importFile
                                 
 				echo "De demultiplexing pipeline is gestart, over een aantal uren zal dit klaar zijn \
                                 en word de data automatisch naar zinc-finger gestuurd, hierna  word de pipeline gestart" | mail -s "Het demultiplexen van ${PROJECTNAME} is gestart op (`date +%d/%m/%Y` `date +%H:%M`)" ${ONTVANGER}
