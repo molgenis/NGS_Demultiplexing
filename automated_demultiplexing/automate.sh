@@ -45,7 +45,7 @@ do
 		##Check if it is a GAF or GD run
 		if [ -f "${ROOTDIR}/umcg-atd/${SCRATCHDIR}/Samplesheets/${PROJECTNAME}.csv" ]
 		then
-			GROUP="umcg-at"
+			GROUP="umcg-atd"
 		elif [ -f "${ROOTDIR}/umcg-gaf/${SCRATCHDIR}/Samplesheets/${PROJECTNAME}.csv" ]
 		then
 			GROUP="umcg-gaf"
