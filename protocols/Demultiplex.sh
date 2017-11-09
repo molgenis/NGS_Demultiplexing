@@ -34,7 +34,7 @@ csv_with_prefix(){
 		fi
 	done
 
-	echo "$result"
+	echo "${result}"
 }
 
 csv(){
@@ -52,7 +52,7 @@ csv(){
 		fi
 	done
 
-	echo "$result"
+	echo "${result}"
 }
 
 _count_reads() {
@@ -101,18 +101,18 @@ _save_log() {
 # Initialize script specific vars.
 #
 
-makeTmpDir ${intermediateDir}
-fluxDir=${MC_tmpFile}
+makeTmpDir "${intermediateDir}"
+fluxDir="${MC_tmpFile}"
 
 #
 # For each lane demultiplex rawdata.
 #
-if [ "$seqType" == "SR" ]
+if [ "${seqType}" == "SR" ]
 then
 	if [[ "${barcode_combined[0]}" == "None" || "${barcode_combined[0]}" == "" ]]
 	then
 		# No barcodes used in this lane: Do nothing.
-		touch ${fluxDir}/${filenamePrefix}.demultiplex.read_count_check.skipped
+		touch "${fluxDir}/${filenamePrefix}.demultiplex.read_count_check.skipped"
 	else
 		#
 		# Illumina-style demultiplexed files:
@@ -123,7 +123,7 @@ then
 		# Check if the files required for the read count check are present.
 		#
 
-		declare    label=${filenamePrefix}
+		declare label="${filenamePrefix}"
 		declare -a read_counts
 		declare -i total_reads=0
 		declare -i longest_read_count_length=5
@@ -133,10 +133,10 @@ then
 		# Read counts of the demultiplexed files.
 		# Note: we actually count lines, which equals reads * 4 for FastQ files.
 		#
-		declare    barcodeD=${filenameSuffixDiscardedReads}
-		declare    fastq=${runResultsDir}/${compressedDemultiplexedDiscardedFastqFilenameSR}
+		declare barcodeD="${filenameSuffixDiscardedReads}"
+		declare fastq="${runResultsDir}/${compressedDemultiplexedDiscardedFastqFilenameSR}"
 		declare -i reads=-1
-		_count_reads ${fastq} ${barcodeD} 'reads'
+		_count_reads "${fastq}" "${barcodeD}" 'reads'
 		read_counts=(${read_counts[@]-} ${barcodeD}:${reads})
 		((total_reads+=reads))
 
@@ -151,19 +151,19 @@ then
 			((total_reads+=reads))
 		done
 
-		declare log=${fluxDir}/${label}.demultiplex.log
+		declare log="${fluxDir}/${label}.demultiplex.log"
 		_save_log ${longest_barcode_length} ${longest_read_count_length} 'Reads' ${total_reads} ${label} ${log} 'read_counts[@]'
 
 	fi
 
-elif [ "$seqType" == "PE" ]
+elif [ "${seqType}" == "PE" ]
 then
 	if [[ "${barcode_combined[0]}" == "None" || "${barcode_combined[0]}" == "" ]]
 	then
 		#
 		# No barcodes used in this lane: Do nothing.
 		#
-		touch ${fluxDir}/${filenamePrefix}.demultiplex.read_count_check.skipped
+		touch "${fluxDir}/${filenamePrefix}.demultiplex.read_count_check.skipped"
 	else
 		#
 		# Illumina-style demultiplexed files:
@@ -175,7 +175,7 @@ then
 		# Check if the files required for the read count check are present.
 		#
 
-		declare    label=${filenamePrefix}
+		declare label="${filenamePrefix}"
 		declare -a read_pair_counts
 		declare -i total_read_pairs=0
 		declare -i longest_read_count_length=10
@@ -186,15 +186,15 @@ then
 		# Note: we actually count lines, which equals reads * 4 for FastQ files.
 		# For PE data the amount of reads in both files must be the same!
 		#
-		declare    barcodeD=${filenameSuffixDiscardedReads}
-		declare    fastq_1=${runResultsDir}/${compressedDemultiplexedDiscardedFastqFilenamePE1}
-		declare    fastq_2=${runResultsDir}/${compressedDemultiplexedDiscardedFastqFilenamePE2}
+		declare barcodeD="${filenameSuffixDiscardedReads}"
+		declare fastq_1="${runResultsDir}/${compressedDemultiplexedDiscardedFastqFilenamePE1}"
+		declare fastq_2="${runResultsDir}/${compressedDemultiplexedDiscardedFastqFilenamePE2}"
 		declare -i reads_1=-1
 		declare -i reads_2=-2
-		_count_reads ${fastq_1} ${barcodeD} 'reads_1'
-		_count_reads ${fastq_2} ${barcodeD} 'reads_2'
-		if (( $reads_1 != $reads_2)); then
-			touch ${fluxDir}/${label}_${barcodeD}.read_count_check_for_pairs.FAILED
+		_count_reads "${fastq_1}" "${barcodeD}" 'reads_1'
+		_count_reads "${fastq_2}" "${barcodeD}" 'reads_2'
+		if (( "${reads_1}" != "${reads_2}" )); then
+			touch "${fluxDir}/${label}_${barcodeD}.read_count_check_for_pairs.FAILED"
 			echo "FATAL: Number of reads in both ${label}_${barcode_combined} FastQ files not the same!"
 			exit 1
 		fi
@@ -209,10 +209,10 @@ then
 		fastq_2=${runResultsDir}/${compressedDemultiplexedSampleFastqFilenamePE2[fileToCheck]}
 		reads_1=-1
 		reads_2=-2
-		_count_reads ${fastq_1} ${barcodeR} 'reads_1'
-		_count_reads ${fastq_2} ${barcodeR} 'reads_2'
-		if (( $reads_1 != $reads_2)); then
-			touch ${fluxDir}/${label}_${barcodeR}.read_count_check_for_pairs.FAILED
+		_count_reads "${fastq_1}" "${barcodeR}" 'reads_1'
+		_count_reads "${fastq_2}" "${barcodeR}" 'reads_2'
+		if (( "${reads_1}" != "${reads_2}" )); then
+			touch "${fluxDir}/${label}_${barcodeR}.read_count_check_for_pairs.FAILED"
 			echo "FATAL: Number of reads in both ${label}_${barcode_combined} FastQ files not the same!"
 			exit 1
 		fi
@@ -221,18 +221,18 @@ then
 
 		done
 
-		declare log=${fluxDir}/${label}.demultiplex.log
-		_save_log ${longest_barcode_length} ${longest_read_count_length} 'Read Pairs' ${total_read_pairs} ${label} ${log} 'read_pair_counts[@]'
+		declare log="${fluxDir}/${label}.demultiplex.log"
+		_save_log "${longest_barcode_length}" "${longest_read_count_length}" 'Read Pairs' "${total_read_pairs}" "${label}" "${log}" 'read_pair_counts[@]'
 
 
-		touch ${fluxDir}/${filenamePrefix}.read_count_check_for_pairs.passed
+		touch "${fluxDir}/${filenamePrefix}.read_count_check_for_pairs.passed"
 
 	fi
 
 fi
-cd ${runResultsDir}
+cd "${runResultsDir}"
 
-mv ${fluxDir}/${filenamePrefix}* .
+mv "${fluxDir}/${filenamePrefix}"* .
 echo "moved ${fluxDir}/${filenamePrefix}* ."
 cd -
 
