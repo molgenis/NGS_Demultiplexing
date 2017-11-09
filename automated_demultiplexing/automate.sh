@@ -136,7 +136,7 @@ do
                                 sh generate_template.sh "${PROJECTNAME}" "${WORKDIR}" "${GROUP}" 2>&1 >> "${LOGGERPIPELINE}"
 
 				check=$(tail -1 "${LOGGERPIPELINE}")
-				if [[ $check == *"WRONG"* ]]
+				if [[ "${check}" == *"WRONG"* ]]
 				then
 					echo "there is something wrong, EXIT"
 					echo "###"
