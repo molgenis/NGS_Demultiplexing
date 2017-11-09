@@ -9,12 +9,14 @@
 #string ngsUtilsVersion
 #string runResultsDir
 #string intermediateDir
-module load ${ngsUtilsVersion}
+#string stage
 
-${createPerSampleFinalReportPl} \
--i ${arrayDir} \
--o ${finalReportResultDir} \
--r ${run} \
--s ${sampleSheet}
+${stage} "${ngsUtilsVersion}"
+
+"${createPerSampleFinalReportPl}" \
+-i "${arrayDir}" \
+-o "${finalReportResultDir}" \
+-r "${run}" \
+-s "${sampleSheet}"
 
 echo "final report created"
