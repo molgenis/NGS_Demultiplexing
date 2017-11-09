@@ -68,11 +68,11 @@ do
 						echo "Er is geen samplesheet gevonden op ${hostname}, op deze locaties: \n -/groups/umcg-gaf/scr01/Samplesheets/${PROJECTNAME}.csv \n -/groups/umcg-gd/scr01/Samplesheets/${PROJECTNAME}.csv" | mail -s "Er is geen samplesheet gevonden voor ${PROJECTNAME} op ${hostname}" ${ONTVANGER}
 						echo "mail has been sent to ${ONTVANGER}"
 						touch "${SAMPLESHEETSDIR}/${PROJECTNAME}_Check.mailed"
-						echo "mail send to ${ONTVANGER}" >> ${DEBUGGER}
+						echo "mail send to ${ONTVANGER}" >> "${DEBUGGER}"
 					fi
                                 else
-					echo  "Samplesheet is not available" >> ${SAMPLESHEETSDIR}/${PROJECTNAME}_Check.txt
-                                        echo "Samplesheet is missing, after 10 times a mail will be send to the user" >> ${DEBUGGER}
+					echo  "Samplesheet is not available" >> "${SAMPLESHEETSDIR}/${PROJECTNAME}_Check.txt"
+                                        echo "Samplesheet is missing, after 10 times a mail will be send to the user" >> "${DEBUGGER}"
                                 fi
 			fi
 			## go to next sample 
