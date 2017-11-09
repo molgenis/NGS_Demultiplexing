@@ -14,7 +14,7 @@ then
 	echo "${myhost}"
 	. "${MYINSTALLATIONDIR}/gattaca.cfg"
 else
-	echo $myhost
+	echo "${myhost}"
 	. "${MYINSTALLATIONDIR}/${myhost}.cfg"
 fi
 WHOAMI=$(whoami)
