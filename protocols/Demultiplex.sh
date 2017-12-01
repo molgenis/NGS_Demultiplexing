@@ -231,8 +231,17 @@ then
 
 fi
 cd "${runResultsDir}"
-
 mv "${fluxDir}/${filenamePrefix}"* .
 echo "moved ${fluxDir}/${filenamePrefix}* ."
+
+discarded=$(fgrep "DISCARDED" "171129_M01785_0101_000000000-BFJBP_QXTR_129_L1.demultiplex.log" | awk -F '[()]' '{print substr($2,2,length($2)-4)}')
+if [[ ${discarded} -gt 10 ]]
+then
+	echo "discarded percentage (${discarded}%) is higher than 10 procent, exiting"
+        exit 1
+else
+        echo "number of discarded reads is ${discarded}"
+fi
+
 cd -
 
