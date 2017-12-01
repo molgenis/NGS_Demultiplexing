@@ -234,7 +234,7 @@ cd "${runResultsDir}"
 mv "${fluxDir}/${filenamePrefix}"* .
 echo "moved ${fluxDir}/${filenamePrefix}* ."
 
-discarded=$(fgrep "DISCARDED" ${filenamePrefix}.demultiplex.log | awk -F '[()]' '{print $2}' | awk '{gsub(/ /,"",$0);print substr($0,1,length($0)-1)}')
+discarded=$(fgrep "DISCARDED" ${filenamePrefix}.demultiplex.log | awk -F '[()]' '{print $2}' | awk '{gsub(/ /,"",$0);print substr($0,1,length($0)-3)}')
 if [[ ${discarded} -gt 10 ]]
 then
 	echo "discarded percentage (${discarded}%) is higher than 10 procent, exiting"
