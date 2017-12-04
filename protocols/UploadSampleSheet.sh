@@ -80,7 +80,12 @@ else
 
 fi
 
-touch "${workDir}/logs/${runPrefix}_Demultiplexing.finished"
+if echo "${runPrefix}" | grep -iqF smmip
+then
+	touch "${workDir}/logs/${runPrefix}_Demultiplexing.finished.smmip"
+else
+        touch "${workDir}/logs/${runPrefix}_Demultiplexing.finished"
+fi
 
 printf "run_id,group,demultiplexing,copy_raw_prm,projects,date\n" > "${intermediateDir}/${runPrefix}_uploading.csv"
 printf "${runPrefix},${group},finished,,," >> "${intermediateDir}/${runPrefix}_uploading.csv"

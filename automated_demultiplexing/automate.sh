@@ -30,7 +30,7 @@ do
 	## PROJECTNAME is sequencingStartDate_sequencer_run_flowcell
 	PROJECTNAME=$(basename "${i}")
 	echo "working on ${PROJECTNAME}"
-
+	sequencer=$(echo "${PROJECTNAME}" | awk 'BEGIN {FS="_"} {print $2}')
 	miSeqCompleted="no"
 
         ## Check if there the run is already completed
