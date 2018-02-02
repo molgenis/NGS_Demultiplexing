@@ -46,10 +46,7 @@ cp "${sampleSheet}" "${runResultsDir}/${runPrefix}.csv"
 chmod u+rw,u-x,g+r,g-wx,o-rwx "${runResultsDir}/${runPrefix}"*
 
 HEADER=$(head -1 "${MCsampleSheet}")
-OLDIFS=$IFS
-IFS=','
-array=($HEADER)
-IFS=$OLDIFS
+IFS=',' array=($HEADER)
 count=0
 groupNameBool="false"
 for i in "${array[@]}"
@@ -61,7 +58,11 @@ do
 done
 if [ "${groupNameBool}" == "false" ]
 then
-	awk -v var="${group}" 'BEGIN{FS=","}{if (NR==1){print $0",groupName"}else{print $0","var}}' "${MCsampleSheet}" > "${MCsampleSheet}.tmp"
+	externalSampleID=$(head -1 ${MCsampleSheet}  | awk 'BEGIN {FS=","}{for (i==1 ; i <=NF; i++){ if ($i=="externalSampleID"){printf i}}}')
+        project=$(head -1 ${MCsampleSheet}  | awk 'BEGIN {FS=","}{for (i==1 ; i <=NF; i++){ if ($i=="project"){printf i}}}')
+        lane=$(head -1 ${MCsampleSheet}  | awk 'BEGIN {FS=","}{for (i==1 ; i <=NF; i++){ if($i=="lane"){printf i}}}')
+
+	awk -v var="${group}" -v ext="${externalSampleID}" -v pro="$project" -v la="$lane" 'BEGIN{FS=","}{if (NR==1){print $0",groupName,uniqueID"}else{print $0","var","$ext"_"$pro"_"$la}}' "${MCsampleSheet}" > "${MCsampleSheet}.tmp"
 	perl -pi -e 'chomp if eof' "${MCsampleSheet}.tmp"
 	echo "updated ${MCsampleSheet} with group column"
 	mv "${MCsampleSheet}.tmp" "${MCsampleSheet}"
