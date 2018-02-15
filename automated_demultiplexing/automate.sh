@@ -20,7 +20,7 @@ fi
 WHOAMI=$(whoami)
 . "/home/${WHOAMI}/molgenis.cfg"
 
-GROUP=""
+GROUP=$1
 ### Sequencer is writing to this location: $NEXTSEQDIR
 ### Looping through to see if all files
 echo "ls -1 -d ${NEXTSEQDIR}/*/"
