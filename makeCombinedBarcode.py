@@ -22,7 +22,7 @@ for row in reader:
 barcode2IsThere="false"
 
 for i in columns['barcode2']:
-        if i == "none" or i == "":
+        if i.lower() == "none" or i == "":
                 barcode2IsThere="false"
                 break
         else:

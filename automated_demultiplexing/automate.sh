@@ -65,7 +65,7 @@ do
 					COUNT=$(cat "${SAMPLESHEETSDIR}/${PROJECTNAME}_Check.txt" | wc -l)
 					if [ "${COUNT}" == 10 ]
 					then
-						echo "Er is geen samplesheet gevonden op ${hostname}, op deze locaties: \n -/groups/umcg-gaf/scr01/Samplesheets/${PROJECTNAME}.csv \n -/groups/umcg-gd/scr01/Samplesheets/${PROJECTNAME}.csv" | mail -s "Er is geen samplesheet gevonden voor ${PROJECTNAME} op ${hostname}" ${ONTVANGER}
+						echo "Er is geen samplesheet gevonden op ${myhost}, op deze locaties: \n -/groups/umcg-gaf/scr01/Samplesheets/${PROJECTNAME}.csv \n -/groups/umcg-gd/scr01/Samplesheets/${PROJECTNAME}.csv" | mail -s "Er is geen samplesheet gevonden voor ${PROJECTNAME} op ${myhost}" ${ONTVANGER}
 						echo "mail has been sent to ${ONTVANGER}"
 						touch "${SAMPLESHEETSDIR}/${PROJECTNAME}_Check.mailed"
 						echo "mail send to ${ONTVANGER}" >> "${DEBUGGER}"
