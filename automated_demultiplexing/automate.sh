@@ -20,9 +20,9 @@ fi
 WHOAMI=$(whoami)
 . "/home/${WHOAMI}/molgenis.cfg"
 
-if [[ -f "sharedFunctions.bash" && -r "sharedFunctions.bash" ]]
+if [[ -f "${MYINSTALLATIONDIR}/sharedFunctions.bash" && -r "${MYINSTALLATIONDIR}/sharedFunctions.bash" ]]
 then
-        source "sharedFunctions.bash"
+        source "${MYINSTALLATIONDIR}/sharedFunctions.bash"
 else
         printf '%s\n' "FATAL: cannot find or cannot access sharedFunctions.bash"
         exit 1
