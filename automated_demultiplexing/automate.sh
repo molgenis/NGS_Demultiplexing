@@ -45,16 +45,16 @@ do
         if [[ -f "${NEXTSEQDIR}/${PROJECTNAME}/RTAComplete.txt" ]] && [[ "${sequencer}" == "M01785" || "${sequencer}" == "M01997" ]]
         then
 		miSeqCompleted="yes"
-		log4Bash 'DEBUG' "${LINENO}" "${FUNCNAME:-main}" '0' "Miseq run detected: miSeqCompleted=yes for ${PROJECTNAME"
+		log4Bash 'DEBUG' "${LINENO}" "${FUNCNAME:-main}" '0' "Miseq run detected: miSeqCompleted=yes for ${PROJECTNAME}."
         fi
 	## Check if there the run is already completed
 	if [[ -f "${NEXTSEQDIR}/${PROJECTNAME}/RunCompletionStatus.xml" || "${miSeqCompleted}" == "yes" ]]
 	then
-		log4Bash 'DEBUG' "${LINENO}" "${FUNCNAME:-main}" '0' "Runstatus compleet:${PROJECTNAME}"
+		log4Bash 'DEBUG' "${LINENO}" "${FUNCNAME:-main}" '0' "Runstatus compleet: ${PROJECTNAME}."
 		##Check if it is a GAF or GD run
 		if [ ! -f "${ROOTDIR}/${GROUP}/${SCRATCHDIR}/Samplesheets/${PROJECTNAME}.csv" ]
 		then
-			log4Bash 'DEBUG' "${LINENO}" "${FUNCNAME:-main}" '0' "No samplesheet for ${PROJECTNAME}: continue"
+			log4Bash 'DEBUG' "${LINENO}" "${FUNCNAME:-main}" '0' "No samplesheet for ${PROJECTNAME}: continue."
 			continue
 		fi
 
@@ -70,7 +70,7 @@ do
 			python "${EBROOTNGS_DEMULTIPLEXING}/automated_demultiplexing/checkSampleSheet.py" --input "${SAMPLESHEETSDIR}/${PROJECTNAME}.csv" --logfile "${DEBUGGER}.error"
 			if [ -s "${DEBUGGER}.error" ]
 			then
-				log4Bash 'INFO' "${LINENO}" "${FUNCNAME:-main}" '0' "${PROJECTNAME} skipped"
+				log4Bash 'INFO' "${LINENO}" "${FUNCNAME:-main}" '0' "${PROJECTNAME} skipped."
 				cat  "${DEBUGGER}.error" | mail -s "Samplesheet error ${PROJECTNAME}" "${ONTVANGER}"
 				rm "${DEBUGGER}.error"
 				break
