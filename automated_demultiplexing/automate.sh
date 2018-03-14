@@ -24,20 +24,86 @@ if [[ -f "${MYINSTALLATIONDIR}/sharedFunctions.bash" && -r "${MYINSTALLATIONDIR}
 then
         source "${MYINSTALLATIONDIR}/sharedFunctions.bash"
 else
-        printf '%s\n' "FATAL: cannot find or cannot access sharedFunctions.bash"
+        log4Bash 'FATAL' "${LINENO}" "${FUNCNAME:-main}" '1' '%s\n' "FATAL: cannot find or cannot access sharedFunctions.bash"
         exit 1
 fi
 
-GROUP=$1
+
+function showHelp() {
+	#
+	# Display commandline help on STDOUT.
+	#
+	cat <<EOH
+======================================================================================================================
+Script to start NGS_Demultiplexing automagicly when sequencer is finished, and corresponding samplesheet is available.
+
+Usage:
+
+	$(basename $0) OPTIONS
+
+Options:
+
+	-h   Show this help.
+	-g   Group.
+	-l   Log level.
+		Must be one of TRACE, DEBUG, INFO (default), WARN, ERROR or FATAL.
+======================================================================================================================
+
+EOH
+	trap - EXIT
+	exit 0
+}
+
+#
+##
+### Main.
+##
+#
+
+#
+# Get commandline arguments.
+#
+log4Bash 'DEBUG' "${LINENO}" "${FUNCNAME:-main}" '0' "Parsing commandline arguments..."
+declare group=''
+while getopts "g:l:h" opt
+do
+	case $opt in
+		h)
+			showHelp
+			;;
+		g)
+			GROUP="${OPTARG}"
+			;;
+		l)
+			l4b_log_level=${OPTARG^^}
+			l4b_log_level_prio=${l4b_log_levels[${l4b_log_level}]}
+			;;
+		\?)
+			log4Bash "${LINENO}" "${FUNCNAME:-main}" '1' "Invalid option -${OPTARG}. Try $(basename $0) -h for help."
+			;;
+		:)
+			log4Bash "${LINENO}" "${FUNCNAME:-main}" '1' "Option -${OPTARG} requires an argument. Try $(basename $0) -h for help."
+			;;
+	esac
+done
+
+#
+# Check commandline options.
+#
+if [[ -z "${GROUP:-}" ]]
+then
+	log4Bash 'FATAL' "${LINENO}" "${FUNCNAME:-main}" '1' 'Must specify a group with -g.'
+fi
+
 ### Sequencer is writing to this location: $NEXTSEQDIR
 ### Looping through to see if all files
-echo "ls -1 -d ${NEXTSEQDIR}/*/"
+log4Bash 'DEBUG' "${LINENO}" "${FUNCNAME:-main}" '0' "ls -1 -d ${NEXTSEQDIR}/*/"
 for i in $(ls -1 -d "${NEXTSEQDIR}/"*/)
 do
 
 	## PROJECTNAME is sequencingStartDate_sequencer_run_flowcell
 	PROJECTNAME=$(basename "${i}")
-	echo "working on ${PROJECTNAME}"
+	log4Bash 'DEBUG' "${LINENO}" "${FUNCNAME:-main}" '0' "working on ${PROJECTNAME}"
 	sequencer=$(echo "${PROJECTNAME}" | awk 'BEGIN {FS="_"} {print $2}')
 	miSeqCompleted="no"
 
@@ -148,3 +214,6 @@ do
                 fi
 	fi
 done
+
+trap - EXIT
+exit 0
