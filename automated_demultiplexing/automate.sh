@@ -6,6 +6,8 @@ set -u
 module list
 
 MYINSTALLATIONDIR=$( cd -P "$( dirname "$0" )" && pwd )
+SCRIPT_NAME="$(basename ${0})"
+SCRIPT_NAME="${SCRIPT_NAME%.*sh}"
 
 ##source config file (zinc-finger.gcc.rug.nl.cfg, leucine-zipper.gcc.rug.nl OR gattaca.cfg)
 myhost=$(hostname)
