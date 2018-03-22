@@ -110,10 +110,12 @@ do
 	miSeqCompleted="no"
 
         ## Check if there the run is already completed
-        if [[ -f "${NEXTSEQDIR}/${PROJECTNAME}/RTAComplete.txt" ]] && [[ "${sequencer}" == "M01785" || "${sequencer}" == "M01997" ]]
+        miSeqNameRegex='^M[0-9][0-9]*$'
+        if [[ -f ${NEXTSEQDIR}/${PROJECTNAME}/RTAComplete.txt ]] && [[ "${sequencer}" =~ ${miSeqNameRegex} ]]
         then
-		miSeqCompleted="yes"
+                miSeqCompleted="yes"
 		log4Bash 'DEBUG' "${LINENO}" "${FUNCNAME:-main}" '0' "Miseq run detected: miSeqCompleted=yes for ${PROJECTNAME}."
+
         fi
 	## Check if there the run is already completed
 	if [[ -f "${NEXTSEQDIR}/${PROJECTNAME}/RunCompletionStatus.xml" || "${miSeqCompleted}" == "yes" ]]
