@@ -66,7 +66,7 @@ then
 	-p ${WORKDIR}/generatedscripts/${RAWDATANAME}/${RAWDATANAME}.csv \
 	-w ${WORKFLOW} \
 	-rundir ${WORKDIR}/runs/${RAWDATANAME}/jobs \
-	-o "dualBarcode=${dualBarcode};parameters_group=${WORKDIR}/generatedscripts/${RAWDATANAME}/parameters_group.cfg" \
+	-o "dualBarcode=${dualBarcode}" \
 	-b slurm \
 	-weave \
 	--generate

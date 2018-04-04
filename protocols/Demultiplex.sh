@@ -17,7 +17,6 @@
 #string run
 #string flowcell
 #string lane
-#string parameters_group
 
 csv_with_prefix(){
 	declare -a items=("${!1}")
@@ -239,8 +238,15 @@ discarded=$(fgrep "DISCARDED" ${filenamePrefix}.demultiplex.log | awk -F '[()]' 
 if [[ ${discarded} -gt 10 ]]
 then
 	echo "discarded percentage (${discarded}%) is higher than 10 procent, exiting"
-	mailing=$(cat "${mailingList}")
-	echo -e "Hallo allen,\ndiscarded percentage (${discarded}%) is higher than 10 procent\nDe demultiplexing pipeline is er dan ook mee gestopt, omdat een te hoog percentage\ndiscarded reads vaak een indicatie is dat er iets mis is met de barcodes oid\n\ngroeten van het GCC" | mail -s "${filenamePrefix} crashed due to too high percentage of discarded reads" "${mailing}"
+	SCRIPT_NAME="$(basename ${0})"
+	SCRIPT_NAME="${SCRIPT_NAME%.*sh}"
+	SCRIPT_NAME="${SCRIPT_NAME%_*}"
+
+	if [[ -r ../../../logs/${SCRIPTNAME}.mailinglist ]]
+	then
+		mailingList=$(cat ../../../logs/${SCRIPTNAME}.mailinglist)
+		echo -e "Hallo allen,\ndiscarded percentage (${discarded}%) is higher than 10 procent\nDe demultiplexing pipeline is er dan ook mee gestopt, omdat een te hoog percentage\ndiscarded reads vaak een indicatie is dat er iets mis is met de barcodes oid\n\ngroeten van het GCC" | mail -s "${filenamePrefix} crashed due to too high percentage of discarded reads" "${mailingList}"
+	fi
         exit 1
 else
         echo "number of discarded reads is ${discarded}"
