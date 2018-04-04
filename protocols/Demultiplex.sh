@@ -103,7 +103,6 @@ _save_log() {
 
 makeTmpDir "${intermediateDir}"
 fluxDir="${MC_tmpFile}"
-. ${parameters_group}
 #
 # For each lane demultiplex rawdata.
 #
