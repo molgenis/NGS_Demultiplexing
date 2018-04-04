@@ -57,8 +57,6 @@ then
 	perl ${EBROOTNGS_DEMULTIPLEXING}/convertParametersGitToMolgenis.pl ${EBROOTNGS_DEMULTIPLEXING}/parameters_${GROUP}.csv > \
 	${WORKDIR}/generatedscripts/${RAWDATANAME}/parameters_group.csv
 
-	cp ${EBROOTNGS_DEMULTIPLEXING}/mailingList_${GROUP}.cfg ${WORKDIR}/generatedscripts/${RAWDATANAME}/parameters_group.cfg
-
 	sh $EBROOTMOLGENISMINCOMPUTE/molgenis_compute.sh \
 	-p ${WORKDIR}/generatedscripts/${RAWDATANAME}/out.csv \
 	-p ${WORKDIR}/generatedscripts/${RAWDATANAME}/parameters_group.csv \
