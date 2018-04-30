@@ -230,6 +230,17 @@ then
 
 fi
 cd "${runResultsDir}"
+
+awk '/DISCARDED/{y=1;next}y' ${filenamePrefix}.demultiplex.log | awk -F '[()]' '{print $2}' | awk '{gsub(/ /,"",$0);print substr($0,1,length($0)-3)}' | sed '$ d' > ${filenamePrefix}.percentages.tmp
+awk '/DISCARDED/{y=1;next}y' ${filenamePrefix}.demultiplex.log | awk -F ':' '{print $2}' | sed '$ d' > ${filenamePrefix}.barcodes.tmp
+
+paste -d'\t' ${filenamePrefix}.barcodes.tmp ${filenamePrefix}.percentages.tmp > ${filenamePrefix}.barcodesPercentages.tmp
+
+awk -v fileName="${filenamePrefix}" '{if ($2<3){print "percentage is too low: "$2 >> fileName"_"$1"_1.fq.gz.rejected"}}' ${filenamePrefix}.barcodesPercentages.tmp
+awk -v fileName="${filenamePrefix}" '{if ($2<3){print "percentage is too low: "$2 >> fileName"_"$1"_2.fq.gz.rejected"}}' ${filenamePrefix}.barcodesPercentages.tmp
+
+rm *.tmp
+
 mv "${fluxDir}/${filenamePrefix}"* .
 echo "moved ${fluxDir}/${filenamePrefix}* ."
 
@@ -250,5 +261,6 @@ then
 else
         echo "number of discarded reads is ${discarded}"
 fi
+
 
 cd -
