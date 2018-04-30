@@ -230,6 +230,8 @@ then
 
 fi
 cd "${runResultsDir}"
+mv "${fluxDir}/${filenamePrefix}"* .
+echo "moved ${fluxDir}/${filenamePrefix}* ."
 
 awk '/DISCARDED/{y=1;next}y' ${filenamePrefix}.demultiplex.log | awk -F '[()]' '{print $2}' | awk '{gsub(/ /,"",$0);print substr($0,1,length($0)-3)}' | sed '$ d' > ${filenamePrefix}.percentages.tmp
 awk '/DISCARDED/{y=1;next}y' ${filenamePrefix}.demultiplex.log | awk -F ':' '{print $2}' | sed '$ d' > ${filenamePrefix}.barcodes.tmp
@@ -241,8 +243,6 @@ awk -v fileName="${filenamePrefix}" '{if ($2<3){print "percentage is too low: "$
 
 rm *.tmp
 
-mv "${fluxDir}/${filenamePrefix}"* .
-echo "moved ${fluxDir}/${filenamePrefix}* ."
 
 discarded=$(fgrep "DISCARDED" ${filenamePrefix}.demultiplex.log | awk -F '[()]' '{print $2}' | awk '{gsub(/ /,"",$0);print substr($0,1,length($0)-3)}')
 if [[ ${discarded} -gt 10 ]]
