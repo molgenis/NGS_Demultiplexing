@@ -240,8 +240,8 @@ awk '/DISCARDED/{y=1;next}y' ${filenamePrefix}.demultiplex.log | awk -F ':' '{pr
 
 paste -d'\t' ${filenamePrefix}.barcodes.tmp ${filenamePrefix}.percentages.tmp > ${filenamePrefix}.barcodesPercentages.tmp
 
-awk -v fileName="${filenamePrefix}" '{if ($2<3){print "percentage="$2 > fileName"_"$1"_1.fq.gz.rejected"}}' ${filenamePrefix}.barcodesPercentages.tmp
-awk -v fileName="${filenamePrefix}" '{if ($2<3){print "percentage="$2 > fileName"_"$1"_2.fq.gz.rejected"}}' ${filenamePrefix}.barcodesPercentages.tmp
+awk -v fileName="${filenamePrefix}" '{if ($2<1){print "percentage="$2 > fileName"_"$1"_1.fq.gz.rejected"}}' ${filenamePrefix}.barcodesPercentages.tmp
+awk -v fileName="${filenamePrefix}" '{if ($2<1){print "percentage="$2 > fileName"_"$1"_2.fq.gz.rejected"}}' ${filenamePrefix}.barcodesPercentages.tmp
 
 
 rm *.tmp
