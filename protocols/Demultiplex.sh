@@ -17,6 +17,7 @@
 #string run
 #string flowcell
 #string lane
+#string sampleSheet
 
 csv_with_prefix(){
 	declare -a items=("${!1}")
@@ -233,31 +234,70 @@ cd "${runResultsDir}"
 mv "${fluxDir}/${filenamePrefix}"* .
 echo "moved ${fluxDir}/${filenamePrefix}* ."
 
-awk '/DISCARDED/{y=1;next}y' ${filenamePrefix}.demultiplex.log | awk -F '[()]' '{print $2}' | awk '{gsub(/ /,"",$0);print substr($0,1,length($0)-3)}' | sed '$ d' > ${filenamePrefix}.percentages.tmp
+
+awk '/DISCARDED/{y=1;next}y' ${filenamePrefix}.demultiplex.log | awk -F '[()]' '{print $2}' | awk '{gsub(/ /,"",$0);print substr($0,1,length($0)-1)}' | sed '$ d' > ${filenamePrefix}.percentages.tmp
 awk '/DISCARDED/{y=1;next}y' ${filenamePrefix}.demultiplex.log | awk -F ':' '{print $2}' | sed '$ d' > ${filenamePrefix}.barcodes.tmp
 
 paste -d'\t' ${filenamePrefix}.barcodes.tmp ${filenamePrefix}.percentages.tmp > ${filenamePrefix}.barcodesPercentages.tmp
 
-awk -v fileName="${filenamePrefix}" '{if ($2<3){print "percentage is too low: "$2 >> fileName"_"$1"_1.fq.gz.rejected"}}' ${filenamePrefix}.barcodesPercentages.tmp
-awk -v fileName="${filenamePrefix}" '{if ($2<3){print "percentage is too low: "$2 >> fileName"_"$1"_2.fq.gz.rejected"}}' ${filenamePrefix}.barcodesPercentages.tmp
+awk -v fileName="${filenamePrefix}" '{if ($2<1){print "percentage="$2 > fileName"_"$1"_1.fq.gz.rejected"}}' ${filenamePrefix}.barcodesPercentages.tmp
+awk -v fileName="${filenamePrefix}" '{if ($2<1){print "percentage="$2 > fileName"_"$1"_2.fq.gz.rejected"}}' ${filenamePrefix}.barcodesPercentages.tmp
+
 
 rm *.tmp
+rejectedReads="false"
+if ls ${filenamePrefix}*_1.fq.gz.rejected
+then
+	rejectedReads="true"
+fi
 
+SCRIPT_NAME="$(basename ${0})"
+SCRIPT_NAME="${SCRIPT_NAME%.*sh}"
+SCRIPT_NAME="${SCRIPT_NAME%_*}"
 
 discarded=$(fgrep "DISCARDED" ${filenamePrefix}.demultiplex.log | awk -F '[()]' '{print $2}' | awk '{gsub(/ /,"",$0);print substr($0,1,length($0)-3)}')
 if [[ ${discarded} -gt 10 ]]
 then
 	echo "discarded percentage (${discarded}%) is higher than 10 procent, exiting"
-	SCRIPT_NAME="$(basename ${0})"
-	SCRIPT_NAME="${SCRIPT_NAME%.*sh}"
-	SCRIPT_NAME="${SCRIPT_NAME%_*}"
 
-	if [[ -r ../../../logs/${SCRIPTNAME}.mailinglist ]]
+	if [[ -r ../../../logs/${SCRIPT_NAME}.mailinglist ]]
 	then
 		mailingList=$(cat ../../../logs/${SCRIPTNAME}.mailinglist)
 		echo -e "Hallo allen,\ndiscarded percentage (${discarded}%) is higher than 10 procent\nDe demultiplexing pipeline is er dan ook mee gestopt, omdat een te hoog percentage\ndiscarded reads vaak een indicatie is dat er iets mis is met de barcodes oid\n\ngroeten van het GCC" | mail -s "${filenamePrefix} crashed due to too high percentage of discarded reads" "${mailingList}"
 	fi
         exit 1
+elif [[ "${rejectedReads}" == "true" ]]
+then
+	if [[ -r ../../../logs/${SCRIPT_NAME}.mailinglist ]]
+        then
+                mailingList=$(cat ../../../logs/${SCRIPT_NAME}.mailinglist)
+
+                echo -e "Hallo allen,\n\nDe volgende barcodes zijn afgekeurd op basis van een te laag percentage reads per barcode):\n" > mailText.txt
+
+		for i in $(ls ${filenamePrefix}*_1.fq.gz.rejected)
+		do
+			percentage="$(awk 'BEGIN {FS":"}{print $2}' $i)"
+
+			barcodeGrep=$(echo ${i} | awk 'BEGIN {FS="_"}{print $6}')
+			echo "grep ${barcodeGrep} ${sampleSheet}"
+			declare -a sampleSheetColumnNames=()
+			declare -A sampleSheetColumnOffsets=()
+			IFS=',' sampleSheetColumnNames=($(head -1 "${sampleSheet}"))
+
+			for (( _offset = 0 ; _offset < ${#sampleSheetColumnNames[@]:-0} ; _offset++ ))
+			do
+				sampleSheetColumnOffsets["${sampleSheetColumnNames[${_offset}]}"]="${_offset}"
+			done
+			externalSampleIDFieldIndex=$((${sampleSheetColumnOffsets['externalSampleID']} + 1 ))
+			sampleID=$(grep ${barcodeGrep} ${sampleSheet} | head -1 | awk -v extId="${externalSampleIDFieldIndex}" 'BEGIN {FS=","}{print $extId}')
+			echo "externalSampleID: ${sampleID}, barcode: ${i}, ${percentage}" >> mailText.txt
+		done
+
+		echo -e "\nAlle lanen voor deze barcode(s) worden niet door de pipeline gehaald.\n\ngroeten,\nGCC" >> mailText.txt 
+		cat mailText.txt
+		cat mailText.txt | mail -s "er zijn samples afgekeurd van run: ${filenamePrefix}" "${mailingList}"
+
+        fi
 else
         echo "number of discarded reads is ${discarded}"
 fi
