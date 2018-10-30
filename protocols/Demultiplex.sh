@@ -256,14 +256,14 @@ SCRIPT_NAME="${SCRIPT_NAME%.*sh}"
 SCRIPT_NAME="${SCRIPT_NAME%_*}"
 
 discarded=$(fgrep "DISCARDED" ${filenamePrefix}.demultiplex.log | awk -F '[()]' '{print $2}' | awk '{gsub(/ /,"",$0);print substr($0,1,length($0)-3)}')
-if [[ ${discarded} -gt 10 ]]
+if [[ ${discarded} -gt 75 ]]
 then
-	echo "discarded percentage (${discarded}%) is higher than 10 procent, exiting"
+	echo "discarded percentage (${discarded}%) is higher than 75 procent, exiting"
 
 	if [[ -r ../../../logs/${SCRIPT_NAME}.mailinglist ]]
 	then
 		mailingList=$(cat ../../../logs/${SCRIPTNAME}.mailinglist)
-		echo -e "Hallo allen,\ndiscarded percentage (${discarded}%) is higher than 10 procent\nDe demultiplexing pipeline is er dan ook mee gestopt, omdat een te hoog percentage\ndiscarded reads vaak een indicatie is dat er iets mis is met de barcodes oid\n\ngroeten van het GCC" | mail -s "${filenamePrefix} crashed due to too high percentage of discarded reads" "${mailingList}"
+		echo -e "Hallo allen,\ndiscarded percentage (${discarded}%) is higher than 75 procent\nDe demultiplexing pipeline is er dan ook mee gestopt, omdat een te hoog percentage\ndiscarded reads vaak een indicatie is dat er iets mis is met de barcodes oid\n\ngroeten van het GCC" | mail -s "${filenamePrefix} crashed due to too high percentage of discarded reads" "${mailingList}"
 	fi
         exit 1
 elif [[ "${rejectedReads}" == "true" ]]
