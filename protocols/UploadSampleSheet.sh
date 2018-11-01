@@ -13,8 +13,7 @@ WHOAMI=$(whoami)
 
 echo "Importing Samplesheet into ${MOLGENISSERVER}"
 
-SCRIPT_NAME="$(basename ${0})"
-SCRIPT_NAME="${SCRIPT_NAME%.*sh}"
+SCRIPT_NAME="UploadSampleSheet"
 
 group=""
 
