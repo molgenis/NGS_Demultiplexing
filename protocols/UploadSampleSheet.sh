@@ -84,12 +84,7 @@ else
 
 fi
 
-if echo "${runPrefix}" | grep -iqF smmip
-then
-	mv "${workDir}/logs/${runPrefix}/run01.demultiplexing."{started,finished.smmip}
-else
-	mv "${workDir}/logs/${runPrefix}/run01.demultiplexing."{started,finished}
-fi
+mv "${workDir}/logs/${runPrefix}/run01.demultiplexing."{started,finished}
 
 printf "run_id,group,demultiplexing,copy_raw_prm,projects,date\n" > "${intermediateDir}/${runPrefix}_uploading.csv"
 printf "${runPrefix},${group},finished,,," >> "${intermediateDir}/${runPrefix}_uploading.csv"
