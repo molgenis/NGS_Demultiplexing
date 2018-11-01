@@ -13,6 +13,9 @@ WHOAMI=$(whoami)
 
 echo "Importing Samplesheet into ${MOLGENISSERVER}"
 
+SCRIPT_NAME="$(basename ${0})"
+SCRIPT_NAME="${SCRIPT_NAME%.*sh}"
+
 group=""
 
 if [[ "${runResultsDir}" == *"umcg-gaf"* ]]
@@ -69,13 +72,13 @@ then
 fi
 
 
-if [ ! -f "${workDir}/logs/${runPrefix}.is.uploaded" ]
+if [ ! -f "${workDir}/logs/${runPrefix}/run01.${SCRIPT_NAME}.finished" ]
 then
 	CURLRESPONSE=$(curl -H "Content-Type: application/json" -X POST -d "{"username"="${USERNAME}", "password"="${PASSWORD}"}" https://${MOLGENISSERVER}/api/v1/login)
 	TOKEN=${CURLRESPONSE:10:32}
 	curl -H "x-molgenis-token:${TOKEN}" -X POST -F"file=@${MCsampleSheet}" -FentityTypeId='status_samples' -Faction=add -Fnotify=false https://${MOLGENISSERVER}/plugin/importwizard/importFile
 
-	touch "${workDir}/logs/${runPrefix}.is.uploaded"
+	touch "${workDir}/logs/${runPrefix}/run01.${SCRIPT_NAME}.finished"
 else
 	echo "samplesheet already uploaded to ${MOLGENISSERVER}"
 
@@ -83,9 +86,9 @@ fi
 
 if echo "${runPrefix}" | grep -iqF smmip
 then
-	mv "${workDir}/logs/${runPrefix}_Demultiplexing."{started,finished.smmip}
+	mv "${workDir}/logs/${runPrefix}/run01.demultiplexing."{started,finished.smmip}
 else
-	mv "${workDir}/logs/${runPrefix}_Demultiplexing."{started,finished}
+	mv "${workDir}/logs/${runPrefix}/run01.demultiplexing."{started,finished}
 fi
 
 printf "run_id,group,demultiplexing,copy_raw_prm,projects,date\n" > "${intermediateDir}/${runPrefix}_uploading.csv"
