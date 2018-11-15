@@ -93,4 +93,3 @@ TOKEN=${CURLRESPONSE:10:32}
 curl -H "x-molgenis-token:${TOKEN}" -X POST -F"file=@${intermediateDir}/${runPrefix}_uploading.csv" -FentityTypeId='status_overview' -Faction=update -Fnotify=false https://${MOLGENISSERVER}/plugin/importwizard/importFile
 
 mv "${workDir}/logs/${runPrefix}/run01.demultiplexing."{started,finished}
-mv "${workDir}/Samplesheets/${runPrefix}.csv*" "${workDir}/Samplesheets/archive/"
