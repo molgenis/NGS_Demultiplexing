@@ -83,7 +83,6 @@ else
 
 fi
 
-mv "${workDir}/logs/${runPrefix}/run01.demultiplexing."{started,finished}
 
 printf "run_id,group,demultiplexing,copy_raw_prm,projects,date\n" > "${intermediateDir}/${runPrefix}_uploading.csv"
 printf "${runPrefix},${group},finished,,," >> "${intermediateDir}/${runPrefix}_uploading.csv"
@@ -92,3 +91,6 @@ CURLRESPONSE=$(curl -H "Content-Type: application/json" -X POST -d "{"username"=
 TOKEN=${CURLRESPONSE:10:32}
 
 curl -H "x-molgenis-token:${TOKEN}" -X POST -F"file=@${intermediateDir}/${runPrefix}_uploading.csv" -FentityTypeId='status_overview' -Faction=update -Fnotify=false https://${MOLGENISSERVER}/plugin/importwizard/importFile
+
+mv "${workDir}/logs/${runPrefix}/run01.demultiplexing."{started,finished}
+mv "${workDir}/Samplesheets/${runPrefix}.csv*" "${workDir}/Samplesheets/archive/"
