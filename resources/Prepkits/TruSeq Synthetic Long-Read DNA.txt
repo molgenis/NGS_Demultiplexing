@@ -1,0 +1,14 @@
+[Version]
+1
+[Name]
+TruSeq Synthetic Long-Read DNA
+[PlateExtension]
+trulr
+[Settings]
+ClearApplicationSettings
+TSLR
+[Reads]
+101
+101
+[I7]
+A001	ATCACG
