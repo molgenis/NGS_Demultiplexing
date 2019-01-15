@@ -1,6 +1,6 @@
 ### Step 1: BclToFastQ
 
-The Bcl files produced by the Illumina sequencers (HiSeq,NextSeq etc), have to be converted to readable format in the form of a FastQ file.
+The Bcl files produced by the Illumina sequencers (HiSeq,NextSeq etc), needs to be converted to a readable format in the form of a FastQ file.
 
 **Scriptname:** BclToFastQ<br/>
 **Input:** sequencer output (bcl files)<br/>
@@ -22,7 +22,7 @@ In this step the reads with the known barcodes will be counted and will be writt
 
 ### Step 4: CreateFinalReport
 Copying Info from the sequencer to the results folder to preserve the important sequence data. <br />
-This step was used to create a final report, this was only working when there was an arrayfile present. 
+This step was used to create a final report, this is only working when there is an arrayfile present. 
 
 **Scriptname:**CreateFinalReport<br/>
 **Input:** (${filePrefix}_${lane}_${barcode}.fastq.gz)*<br/>

@@ -2,7 +2,7 @@
 
 - [Release Notes](https://github.com/molgenis/NGS_Demultiplexing/releases)
 
-- Environment setup with easybuild
+- Environment setup with EasyBuild
   - [Install environment](eb-install.md)
 
 - NGS_Demultiplexing

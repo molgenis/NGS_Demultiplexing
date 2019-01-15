@@ -7,9 +7,9 @@ We first have to load EasyBuild, this can be done using the following command:
 module load EasyBuild
 ```
 
-The NGS_Demultiplexing has a some dependencies, these are handled by easybuild when the --robot command is executed (all the dependencies can be found [here](ngs-dependencies)). Since we have also our own repo we have to give the path to that also. There can be multiple paths to easybuild configs, just separate them by colon.
+The NGS_Demultiplexing has some dependencies, that are handled by EasyBuild when the --robot command is executed (all the dependencies can be found [here](ngs-dependencies)). Since we also have our own repo we have to give the path to that also. There can be multiple paths to easybuild configs, just separate them by colon.
 
-**_Note:_** The order in which you give the paths are important! The original easybuild path can be left empty (just a colon is enough)
+**_Note:_** The order in which you give the paths is important! The original easybuild path can be left empty (just a colon is enough)
 ```bash
 eb NGS_Automated/2.0.13-NGS_Demultiplexing-2.0.12 --robot --robot-paths=${pathToMYeasybuild}/easybuild-easyconfigs/easybuild/easyconfigs/:
 ```
