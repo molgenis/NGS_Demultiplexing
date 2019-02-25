@@ -17,6 +17,7 @@
 #string run
 #string flowcell
 #string lane
+#string sampleSheet
 
 csv_with_prefix(){
 	declare -a items=("${!1}")
@@ -34,7 +35,7 @@ csv_with_prefix(){
 		fi
 	done
 
-	echo "$result"
+	echo "${result}"
 }
 
 csv(){
@@ -52,7 +53,7 @@ csv(){
 		fi
 	done
 
-	echo "$result"
+	echo "${result}"
 }
 
 _count_reads() {
@@ -101,18 +102,17 @@ _save_log() {
 # Initialize script specific vars.
 #
 
-makeTmpDir ${intermediateDir}
-fluxDir=${MC_tmpFile}
-
+makeTmpDir "${intermediateDir}"
+fluxDir="${MC_tmpFile}"
 #
 # For each lane demultiplex rawdata.
 #
-if [ "$seqType" == "SR" ]
+if [ "${seqType}" == "SR" ]
 then
 	if [[ "${barcode_combined[0]}" == "None" || "${barcode_combined[0]}" == "" ]]
 	then
 		# No barcodes used in this lane: Do nothing.
-		touch ${fluxDir}/${filenamePrefix}.demultiplex.read_count_check.skipped
+		touch "${fluxDir}/${filenamePrefix}.demultiplex.read_count_check.skipped"
 	else
 		#
 		# Illumina-style demultiplexed files:
@@ -123,7 +123,7 @@ then
 		# Check if the files required for the read count check are present.
 		#
 
-		declare    label=${filenamePrefix}
+		declare label="${filenamePrefix}"
 		declare -a read_counts
 		declare -i total_reads=0
 		declare -i longest_read_count_length=5
@@ -133,10 +133,10 @@ then
 		# Read counts of the demultiplexed files.
 		# Note: we actually count lines, which equals reads * 4 for FastQ files.
 		#
-		declare    barcodeD=${filenameSuffixDiscardedReads}
-		declare    fastq=${runResultsDir}/${compressedDemultiplexedDiscardedFastqFilenameSR}
+		declare barcodeD="${filenameSuffixDiscardedReads}"
+		declare fastq="${runResultsDir}/${compressedDemultiplexedDiscardedFastqFilenameSR}"
 		declare -i reads=-1
-		_count_reads ${fastq} ${barcodeD} 'reads'
+		_count_reads "${fastq}" "${barcodeD}" 'reads'
 		read_counts=(${read_counts[@]-} ${barcodeD}:${reads})
 		((total_reads+=reads))
 
@@ -151,19 +151,19 @@ then
 			((total_reads+=reads))
 		done
 
-		declare log=${fluxDir}/${label}.demultiplex.log
+		declare log="${fluxDir}/${label}.demultiplex.log"
 		_save_log ${longest_barcode_length} ${longest_read_count_length} 'Reads' ${total_reads} ${label} ${log} 'read_counts[@]'
 
 	fi
 
-elif [ "$seqType" == "PE" ]
+elif [ "${seqType}" == "PE" ]
 then
 	if [[ "${barcode_combined[0]}" == "None" || "${barcode_combined[0]}" == "" ]]
 	then
 		#
 		# No barcodes used in this lane: Do nothing.
 		#
-		touch ${fluxDir}/${filenamePrefix}.demultiplex.read_count_check.skipped
+		touch "${fluxDir}/${filenamePrefix}.demultiplex.read_count_check.skipped"
 	else
 		#
 		# Illumina-style demultiplexed files:
@@ -175,7 +175,7 @@ then
 		# Check if the files required for the read count check are present.
 		#
 
-		declare    label=${filenamePrefix}
+		declare label="${filenamePrefix}"
 		declare -a read_pair_counts
 		declare -i total_read_pairs=0
 		declare -i longest_read_count_length=10
@@ -186,15 +186,15 @@ then
 		# Note: we actually count lines, which equals reads * 4 for FastQ files.
 		# For PE data the amount of reads in both files must be the same!
 		#
-		declare    barcodeD=${filenameSuffixDiscardedReads}
-		declare    fastq_1=${runResultsDir}/${compressedDemultiplexedDiscardedFastqFilenamePE1}
-		declare    fastq_2=${runResultsDir}/${compressedDemultiplexedDiscardedFastqFilenamePE2}
+		declare barcodeD="${filenameSuffixDiscardedReads}"
+		declare fastq_1="${runResultsDir}/${compressedDemultiplexedDiscardedFastqFilenamePE1}"
+		declare fastq_2="${runResultsDir}/${compressedDemultiplexedDiscardedFastqFilenamePE2}"
 		declare -i reads_1=-1
 		declare -i reads_2=-2
-		_count_reads ${fastq_1} ${barcodeD} 'reads_1'
-		_count_reads ${fastq_2} ${barcodeD} 'reads_2'
-		if (( $reads_1 != $reads_2)); then
-			touch ${fluxDir}/${label}_${barcodeD}.read_count_check_for_pairs.FAILED
+		_count_reads "${fastq_1}" "${barcodeD}" 'reads_1'
+		_count_reads "${fastq_2}" "${barcodeD}" 'reads_2'
+		if (( "${reads_1}" != "${reads_2}" )); then
+			touch "${fluxDir}/${label}_${barcodeD}.read_count_check_for_pairs.FAILED"
 			echo "FATAL: Number of reads in both ${label}_${barcode_combined} FastQ files not the same!"
 			exit 1
 		fi
@@ -209,10 +209,10 @@ then
 		fastq_2=${runResultsDir}/${compressedDemultiplexedSampleFastqFilenamePE2[fileToCheck]}
 		reads_1=-1
 		reads_2=-2
-		_count_reads ${fastq_1} ${barcodeR} 'reads_1'
-		_count_reads ${fastq_2} ${barcodeR} 'reads_2'
-		if (( $reads_1 != $reads_2)); then
-			touch ${fluxDir}/${label}_${barcodeR}.read_count_check_for_pairs.FAILED
+		_count_reads "${fastq_1}" "${barcodeR}" 'reads_1'
+		_count_reads "${fastq_2}" "${barcodeR}" 'reads_2'
+		if (( "${reads_1}" != "${reads_2}" )); then
+			touch "${fluxDir}/${label}_${barcodeR}.read_count_check_for_pairs.FAILED"
 			echo "FATAL: Number of reads in both ${label}_${barcode_combined} FastQ files not the same!"
 			exit 1
 		fi
@@ -221,18 +221,86 @@ then
 
 		done
 
-		declare log=${fluxDir}/${label}.demultiplex.log
-		_save_log ${longest_barcode_length} ${longest_read_count_length} 'Read Pairs' ${total_read_pairs} ${label} ${log} 'read_pair_counts[@]'
+		declare log="${fluxDir}/${label}.demultiplex.log"
+		_save_log "${longest_barcode_length}" "${longest_read_count_length}" 'Read Pairs' "${total_read_pairs}" "${label}" "${log}" 'read_pair_counts[@]'
 
 
-		touch ${fluxDir}/${filenamePrefix}.read_count_check_for_pairs.passed
+		touch "${fluxDir}/${filenamePrefix}.read_count_check_for_pairs.passed"
 
 	fi
 
 fi
-cd ${runResultsDir}
-
-mv ${fluxDir}/${filenamePrefix}* .
+cd "${runResultsDir}"
+mv "${fluxDir}/${filenamePrefix}"* .
 echo "moved ${fluxDir}/${filenamePrefix}* ."
-cd -
 
+
+awk '/DISCARDED/{y=1;next}y' ${filenamePrefix}.demultiplex.log | awk -F '[()]' '{print $2}' | awk '{gsub(/ /,"",$0);print substr($0,1,length($0)-1)}' | sed '$ d' > ${filenamePrefix}.percentages.tmp
+awk '/DISCARDED/{y=1;next}y' ${filenamePrefix}.demultiplex.log | awk -F ':' '{print $2}' | sed '$ d' > ${filenamePrefix}.barcodes.tmp
+
+paste -d'\t' ${filenamePrefix}.barcodes.tmp ${filenamePrefix}.percentages.tmp > ${filenamePrefix}.barcodesPercentages.tmp
+
+awk -v fileName="${filenamePrefix}" '{if ($2==0.0){print "percentage="$2 > fileName"_"$1"_1.fq.gz.rejected"}}' ${filenamePrefix}.barcodesPercentages.tmp
+awk -v fileName="${filenamePrefix}" '{if ($2==0.0){print "percentage="$2 > fileName"_"$1"_2.fq.gz.rejected"}}' ${filenamePrefix}.barcodesPercentages.tmp
+
+
+rm *.tmp
+rejectedReads="false"
+if ls ${filenamePrefix}*_1.fq.gz.rejected
+then
+	rejectedReads="true"
+fi
+
+SCRIPT_NAME="$(basename ${0})"
+SCRIPT_NAME="${SCRIPT_NAME%.*sh}"
+SCRIPT_NAME="${SCRIPT_NAME%_*}"
+
+discarded=$(fgrep "DISCARDED" ${filenamePrefix}.demultiplex.log | awk -F '[()]' '{print $2}' | awk '{gsub(/ /,"",$0);print substr($0,1,length($0)-3)}')
+if [[ ${discarded} -gt 75 ]]
+then
+	echo "discarded percentage (${discarded}%) is higher than 75 procent, exiting"
+
+	if [[ -r ../../../logs/${SCRIPT_NAME}.mailinglist ]]
+	then
+		mailingList=$(cat ../../../logs/${SCRIPTNAME}.mailinglist)
+		echo -e "Hallo allen,\ndiscarded percentage (${discarded}%) is higher than 75 procent\nDe demultiplexing pipeline is er dan ook mee gestopt, omdat een te hoog percentage\ndiscarded reads vaak een indicatie is dat er iets mis is met de barcodes oid\n\ngroeten van het GCC" | mail -s "${filenamePrefix} crashed due to too high percentage of discarded reads" "${mailingList}"
+	fi
+        exit 1
+elif [[ "${rejectedReads}" == "true" ]]
+then
+	if [[ -r ../../../logs/${SCRIPT_NAME}.mailinglist ]]
+        then
+                mailingList=$(cat ../../../logs/${SCRIPT_NAME}.mailinglist)
+
+                echo -e "Hallo allen,\n\nDe volgende barcodes zijn afgekeurd op basis van een te laag percentage reads per barcode):\n" > mailText.txt
+
+		for i in $(ls ${filenamePrefix}*_1.fq.gz.rejected)
+		do
+			percentage="$(awk 'BEGIN {FS":"}{print $2}' $i)"
+
+			barcodeGrep=$(echo ${i} | awk 'BEGIN {FS="_"}{print $6}')
+			echo "grep ${barcodeGrep} ${sampleSheet}"
+			declare -a sampleSheetColumnNames=()
+			declare -A sampleSheetColumnOffsets=()
+			IFS=',' sampleSheetColumnNames=($(head -1 "${sampleSheet}"))
+
+			for (( _offset = 0 ; _offset < ${#sampleSheetColumnNames[@]:-0} ; _offset++ ))
+			do
+				sampleSheetColumnOffsets["${sampleSheetColumnNames[${_offset}]}"]="${_offset}"
+			done
+			externalSampleIDFieldIndex=$((${sampleSheetColumnOffsets['externalSampleID']} + 1 ))
+			sampleID=$(grep ${barcodeGrep} ${sampleSheet} | head -1 | awk -v extId="${externalSampleIDFieldIndex}" 'BEGIN {FS=","}{print $extId}')
+			echo "externalSampleID: ${sampleID}, barcode: ${i}, ${percentage}" >> mailText.txt
+		done
+
+		echo -e "\nAlle lanen voor deze barcode(s) worden niet door de pipeline gehaald.\n\ngroeten,\nGCC" >> mailText.txt 
+		cat mailText.txt
+		cat mailText.txt | mail -s "er zijn samples afgekeurd van run: ${filenamePrefix}" "${mailingList}"
+
+        fi
+else
+        echo "number of discarded reads is ${discarded}"
+fi
+
+
+cd -

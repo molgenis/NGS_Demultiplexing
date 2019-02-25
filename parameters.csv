@@ -30,7 +30,7 @@ intermediateDir,${workDir}/tmp/${runPrefix}/
 
 bcl2fastqDir,${nextSeqRunDataDir}/${project}
 sampleSheet,${workDir}/generatedscripts/${runPrefix}/${runPrefix}.csv
-MCsampleSheet,${intermediateDir}/base_GCCsamplelist.csv
+MCsampleSheet,${intermediateDir}/status_samples.csv
 
 sourcesDir,${root}/sources/
 

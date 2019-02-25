@@ -13,8 +13,8 @@
 #string ngsUtilsVersion
 #string dualBarcode
 
-${stage} ${bcl2fastqVersion}
-${stage} ${ngsUtilsVersion}
+${stage} "${bcl2fastqVersion}"
+${stage} "${ngsUtilsVersion}"
 
 ${checkStage}
 
@@ -23,33 +23,33 @@ ${checkStage}
 #
 
 #Make an intermediate and resultsDir 
-if [ ! -d ${runResultsDir} ]
+if [ ! -d "${runResultsDir}" ]
 then
-	mkdir -p ${runResultsDir}
+	mkdir -p "${runResultsDir}"
 	echo "mkdir ${runResultsDir}"
 fi
 
-if [ ! -d ${intermediateDir} ]
+if [ ! -d "${intermediateDir}" ]
 then
-	mkdir -p ${intermediateDir}
+	mkdir -p "${intermediateDir}"
 fi
 
-if [ -d ${intermediateDir}/Reports ]
+if [ -d "${intermediateDir}/Reports" ]
 then
-	rm -rf ${intermediateDir}/Reports
+	rm -rf "${intermediateDir}/Reports"
 fi
 
-if [ -d ${intermediateDir}/Stats ]
+if [ -d "${intermediateDir}/Stats" ]
 then
-        rm -rf ${intermediateDir}/Stats
+        rm -rf "${intermediateDir}/Stats"
 fi
 
-cp ${sampleSheet} ${runJobsDir}
+cp "${sampleSheet}" "${runJobsDir}"
 
 echo "intermediateDir: ${intermediateDir}"
 
-makeTmpDir ${intermediateDir}
-tmpIntermediateDir=${MC_tmpFile}
+makeTmpDir "${intermediateDir}"
+tmpIntermediateDir="${MC_tmpFile}"
 
 echo "tmpIntermediateDir: ${tmpIntermediateDir}"
 
@@ -57,28 +57,28 @@ if [ "${dualBarcode}" == "TRUE" ]
 then
 	echo "dualBarcode modus on"
 	CreateIlluminaSampleSheet_V2.pl \
-	-i ${sampleSheet} \
-	-o ${tmpIntermediateDir}/Illumina_R${run}.csv \
-	-r ${run} \
+	-i "${sampleSheet}" \
+	-o "${tmpIntermediateDir}/Illumina_R${run}.csv" \
+	-r "${run}" \
 	-d TRUE \
-	-s ${prepKitsDir}
+	-s "${prepKitsDir}"
 else
 	echo "only one barcode detected"
 
 	CreateIlluminaSampleSheet_V2.pl \
-	-i ${sampleSheet} \
-	-o ${tmpIntermediateDir}/Illumina_R${run}.csv \
-	-r ${run} \
-	-s ${prepKitsDir}
+	-i "${sampleSheet}" \
+	-o "${tmpIntermediateDir}/Illumina_R${run}.csv" \
+	-r "${run}" \
+	-s "${prepKitsDir}"
 
 fi
-mv ${tmpIntermediateDir}/Illumina_R${run}.csv ${intermediateDir}/Illumina_R${run}.csv
+mv "${tmpIntermediateDir}/Illumina_R${run}.csv" "${intermediateDir}/Illumina_R${run}.csv"
 
 bcl2fastq \
---runfolder-dir ${nextSeqRunDataDir} \
---output-dir ${tmpIntermediateDir} \
+--runfolder-dir "${nextSeqRunDataDir}" \
+--output-dir "${tmpIntermediateDir}" \
 --mask-short-adapter-reads 10 \
---sample-sheet ${intermediateDir}/Illumina_R${run}.csv 
+--sample-sheet "${intermediateDir}/Illumina_R${run}.csv"
 
-mv ${tmpIntermediateDir}/* ${intermediateDir}
+mv "${tmpIntermediateDir}/"* "${intermediateDir}"
 echo "moved ${tmpIntermediateDir}/* ${intermediateDir}"
