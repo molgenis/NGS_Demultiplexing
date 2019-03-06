@@ -86,7 +86,7 @@ mv "${tmpIntermediateDir}/Illumina_R${run}.csv" "${intermediateDir}/Illumina_R${
 
 if [ "${barcodeType}" == "UMI" ]
 then
-        if  [ "PE" == "PE" ] 
+        if  [ "${seqType}" == "PE" ] 
         then
                 bcl2fastq \
 		--runfolder-dir "${nextSeqRunDataDir}" \
