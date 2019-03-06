@@ -101,7 +101,7 @@ else
 	--runfolder-dir "${nextSeqRunDataDir}" \
 	--output-dir "${tmpIntermediateDir}" \
 	--mask-short-adapter-reads 5 \
-	--use-bases-mask ${baseMask} \
+	--use-bases-mask "${baseMask}" \
 	--minimum-trimmed-read-length 0 \
 	--create-fastq-for-index-reads \
 	--sample-sheet "${intermediateDir}/Illumina_R${run}.csv"
