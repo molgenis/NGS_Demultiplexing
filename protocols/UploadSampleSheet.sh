@@ -47,6 +47,11 @@ cp "${sampleSheet}" "${MCsampleSheet}"
 cp "${sampleSheet}" "${runResultsDir}/${runPrefix}.csv"
 chmod u+rw,u-x,g+r,g-wx,o-rwx "${runResultsDir}/${runPrefix}"*
 
+if [ ! -d "${workDir}/logs/${runPrefix}/" ]
+then
+	mkdir -p "${workDir}/logs/${runPrefix}/"
+fi
+
 HEADER=$(head -1 "${MCsampleSheet}")
 IFS=',' array=($HEADER)
 count=0
@@ -96,4 +101,9 @@ TOKEN=${CURLRESPONSE:10:32}
 
 curl -H "x-molgenis-token:${TOKEN}" -X POST -F"file=@${intermediateDir}/${runPrefix}_uploading.csv" -FentityTypeId='status_overview' -Faction=update -Fnotify=false https://${MOLGENISSERVER}/plugin/importwizard/importFile
 
-mv "${workDir}/logs/${runPrefix}/run01.demultiplexing."{started,finished}
+if [ -f "${workDir}/logs/${runPrefix}/run01.demultiplexing.started" ]
+then
+	mv "${workDir}/logs/${runPrefix}/run01.demultiplexing."{started,finished}
+else
+	touch "${workDir}/logs/${runPrefix}/run01.demultiplexing.finished"
+fi

@@ -75,7 +75,7 @@ do
 
 		###CORRECT BARCODES
 		else
-			if $(ls ${intermermediateDir}/lane${lane}_${barcode_combined[sampleNumber]}_S[0-9]*_L00${lane}_R*_001.fastq.gz 1> /dev/null 2>&1)
+			if $(ls ${intermediateDir}/lane${lane}_${barcode_combined[sampleNumber]}_S[0-9]*_L00${lane}_R*_001.fastq.gz 1> /dev/null 2>&1)
 			then
 				cd "${intermediateDir}"
 				##R1
