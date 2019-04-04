@@ -94,7 +94,10 @@ arrayRejected=()
 fieldIndex=$(for i in $(ls "${runResultsDir}/"*".rejected"); do echo $i | awk '{n=split($0, array, "_")} END{ print n-1 }';done)
 for i in $(ls "${runResultsDir}/"*".rejected"); do echo $i | awk -v field="${fieldIndex}" 'BEGIN{FS="_"}{print $field}' ;done | uniq > "${runResultsDir}/rejectedBarcodes.txt"
 
-
+if [ ! -s "${runResultsDir}/rejectedBarcodes.txt" ]
+then
+	rm "${runResultsDir}/rejectedBarcodes.txt"
+fi
 printf "run_id,group,demultiplexing,copy_raw_prm,projects,date\n" > "${intermediateDir}/${runPrefix}_uploading.csv"
 printf "${runPrefix},${group},finished,,," >> "${intermediateDir}/${runPrefix}_uploading.csv"
 
