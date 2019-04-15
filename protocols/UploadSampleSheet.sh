@@ -68,7 +68,7 @@ then
 	externalSampleID=$(head -1 ${MCsampleSheet}  | awk 'BEGIN {FS=","}{for (i==1 ; i <=NF; i++){ if ($i=="externalSampleID"){printf i}}}')
         project=$(head -1 ${MCsampleSheet}  | awk 'BEGIN {FS=","}{for (i==1 ; i <=NF; i++){ if ($i=="project"){printf i}}}')
         lane=$(head -1 ${MCsampleSheet}  | awk 'BEGIN {FS=","}{for (i==1 ; i <=NF; i++){ if($i=="lane"){printf i}}}')
-	
+
 	awk -v ext="${externalSampleID}" 'BEGIN{FS=","}{print $ext}' "${MCsampleSheet}" | awk 'BEGIN{FS="_"}{if (NR==1){print "famnr,umcgnr,dnanr,onderzoeknr,archiveLocation"} else {print $1","$2","$3","$4",prm03"}}' > "${MCsampleSheet}.splittedExtID"
 	awk -v var="${group}" -v ext="${externalSampleID}" -v pro="$project" -v la="$lane" 'BEGIN{FS=","}{if (NR==1){print $0",groupName,uniqueID"}else{print $0","var","$ext"_"$pro"_"$la}}' "${MCsampleSheet}" > "${MCsampleSheet}.add"
 	paste -d',' "${MCsampleSheet}.splittedExtID" "${MCsampleSheet}.add" > "${MCsampleSheet}.tmp"
@@ -80,10 +80,16 @@ fi
 
 if [ ! -f "${workDir}/logs/${runPrefix}/run01.${SCRIPT_NAME}.finished" ]
 then
-	CURLRESPONSE=$(curl -H "Content-Type: application/json" -X POST -d "{"username"="${USERNAME}", "password"="${PASSWORD}"}" https://${MOLGENISSERVER}/api/v1/login)
-	TOKEN=${CURLRESPONSE:10:32}
-	curl -H "x-molgenis-token:${TOKEN}" -X POST -F"file=@${MCsampleSheet}" -FentityTypeId='status_samples' -Faction=add -Fnotify=false https://${MOLGENISSERVER}/plugin/importwizard/importFile
+	if curl -s -f -H "Content-Type: application/json" -X POST -d "{"username"="${USERNAME}", "password"="${PASSWORD}"}" https://${MOLGENISSERVER}/api/v1/login
+	then
+		CURLRESPONSE=$(curl -H "Content-Type: application/json" -X POST -d "{"username"="${USERNAME}", "password"="${PASSWORD}"}" https://${MOLGENISSERVER}/api/v1/login)
+		TOKEN=${CURLRESPONSE:10:32}
+		curl -H "x-molgenis-token:${TOKEN}" -X POST -F"file=@${MCsampleSheet}" -FentityTypeId='status_samples' -Faction=add -Fnotify=false https://${MOLGENISSERVER}/plugin/importwizard/importFile
+	else
+		echo "curl couldn't connect to host, skipped the uploading of the samplesheet to ${MOLGENISSERVER}"
+		echo "curl couldn't connect to host, skipped the uploading of the samplesheet to ${MOLGENISSERVER}" > "${runResultsDir}/${runPrefix}.csv.uploadingFailed"
 
+	fi
 	touch "${workDir}/logs/${runPrefix}/run01.${SCRIPT_NAME}.finished"
 else
 	echo "samplesheet already uploaded to ${MOLGENISSERVER}"
@@ -101,10 +107,15 @@ fi
 printf "run_id,group,demultiplexing,copy_raw_prm,projects,date\n" > "${intermediateDir}/${runPrefix}_uploading.csv"
 printf "${runPrefix},${group},finished,,," >> "${intermediateDir}/${runPrefix}_uploading.csv"
 
-CURLRESPONSE=$(curl -H "Content-Type: application/json" -X POST -d "{"username"="${USERNAME}", "password"="${PASSWORD}"}" https://${MOLGENISSERVER}/api/v1/login)
-TOKEN=${CURLRESPONSE:10:32}
+if curl -s -f -H "Content-Type: application/json" -X POST -d "{"username"="${USERNAME}", "password"="${PASSWORD}"}" https://${MOLGENISSERVER}/api/v1/login
+then
+	CURLRESPONSE=$(curl -H "Content-Type: application/json" -X POST -d "{"username"="${USERNAME}", "password"="${PASSWORD}"}" https://${MOLGENISSERVER}/api/v1/login)
+	TOKEN=${CURLRESPONSE:10:32}
 
-curl -H "x-molgenis-token:${TOKEN}" -X POST -F"file=@${intermediateDir}/${runPrefix}_uploading.csv" -FentityTypeId='status_overview' -Faction=update -Fnotify=false https://${MOLGENISSERVER}/plugin/importwizard/importFile
+	curl -H "x-molgenis-token:${TOKEN}" -X POST -F"file=@${intermediateDir}/${runPrefix}_uploading.csv" -FentityTypeId='status_overview' -Faction=update -Fnotify=false https://${MOLGENISSERVER}/plugin/importwizard/importFile
+else
+	echo "curl couldn't connect to host, skipped updating the status_overview of the samplesheet to ${MOLGENISSERVER}"
+fi
 
 if [ -f "${workDir}/logs/${runPrefix}/run01.demultiplexing.started" ]
 then
