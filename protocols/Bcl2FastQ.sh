@@ -1,8 +1,6 @@
 #MOLGENIS walltime=12:00:00 nodes=1 ppn=6 mem=12gb
 #string bcl2fastqVersion
-#string NGSDir
 #string nextSeqRunDataDir
-#string runResultsDir
 #string stage
 #string checkStage
 #string sampleSheet
@@ -12,6 +10,7 @@
 #string prepKitsDir
 #string ngsUtilsVersion
 #string dualBarcode
+#string runResultsDir
 #string barcodeType
 #string seqType
 
@@ -23,14 +22,12 @@ ${checkStage}
 #
 # Initialize script specific vars.
 #
-
-#Make an intermediate and resultsDir 
 if [ ! -d "${runResultsDir}" ]
 then
 	mkdir -p "${runResultsDir}"
 	echo "mkdir ${runResultsDir}"
 fi
-
+#Make an intermediate and resultsDir 
 if [ ! -d "${intermediateDir}" ]
 then
 	mkdir -p "${intermediateDir}"

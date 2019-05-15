@@ -20,7 +20,7 @@ then
 fi
 
 mkdir -p ${WORKDIR}/generatedscripts/${RAWDATANAME}/
-
+mkdir -p ${WORKDIR}/rawdata/ngs/${RAWDATANAME}/
 if [ -f ${WORKDIR}/generatedscripts/${RAWDATANAME}/out.csv  ];
 then
     	rm -rf ${WORKDIR}/generatedscripts/${RAWDATANAME}/out.csv

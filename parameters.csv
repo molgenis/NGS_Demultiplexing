@@ -7,29 +7,26 @@ bcl2fastqVersion,bcl2fastq2/v2.17.1.14-foss-2015b
 ngsUtilsVersion,ngs-utils/17.01.1
 
 #### Prefixes ####
-runPrefix,${sequencingStartDate}_${sequencer}_${run}_${flowcell}
-filePrefix,${runPrefix}_L${lane}
+filePrefix,${sequencingStartDate}_${sequencer}_${run}_${flowcell}
+runPrefix,${filePrefix}_L${lane}
 
 ##### GENERAL DIRECTORIES #####
 dataDir,${root}/data/
 rawDataDir,${workDir}/rawdata
-hiseqDir,${rawDataDir}/hiseq
-hiseqRunDataDir,${hiseqDir}/${runPrefix}
 
-
-NGSDir,${rawDataDir}/ngs
+ngsDir,${rawDataDir}/ngs/${filePrefix}/
 arrayDir,${rawDataDir}/array 
 
 runID,run_${run}
-generatedScriptsDir,${workDir}/generatedscripts/${runPrefix}/
-runDir,${workDir}/runs/${runPrefix}/
+generatedScriptsDir,${workDir}/generatedscripts/${filePrefix}/
+runDir,${workDir}/runs/${filePrefix}/
 runJobsDir,${runDir}/jobs/
 runResultsDir,${runDir}/results/
 prepKitsDir,${dataDir}/Prepkits/
-intermediateDir,${workDir}/tmp/${runPrefix}/
+intermediateDir,${workDir}/tmp/${filePrefix}/
 
 bcl2fastqDir,${nextSeqRunDataDir}/${project}
-sampleSheet,${workDir}/generatedscripts/${runPrefix}/${runPrefix}.csv
+sampleSheet,${workDir}/generatedscripts/${filePrefix}/${filePrefix}.csv
 MCsampleSheet,${intermediateDir}/status_samples.csv
 
 sourcesDir,${root}/sources/
@@ -40,7 +37,6 @@ adapterStringency,0.9
 createPerSampleFinalReportPl,CreateFinalReportPerSample.pl
 finalReportResultDir,${nextSeqRunDataDir}/finalreports/
 
-filenamePrefix,${sequencingStartDate}_${sequencer}_${run}_${flowcell}_L${lane}
 fastqExtension,.fq
 gzipExtension,.gz
 md5sumExtension,.md5
@@ -49,22 +45,22 @@ filenameSuffixPE1,1
 filenameSuffixPE2,2
 filenameSuffixDiscardedReads,DISCARDED
 
-fastqFilenameSR,${filenamePrefix}${fastqExtension}
-fastqFilenamePE1,${filenamePrefix}_${filenameSuffixPE1}${fastqExtension}
-fastqFilenamePE2,${filenamePrefix}_${filenameSuffixPE2}${fastqExtension}
+fastqFilenameSR,${runPrefix}${fastqExtension}
+fastqFilenamePE1,${runPrefix}_${filenameSuffixPE1}${fastqExtension}
+fastqFilenamePE2,${runPrefix}_${filenameSuffixPE2}${fastqExtension}
 
 compressedFastqFilenameSR,${fastqFilenameSR}${gzipExtension}
 compressedFastqFilenamePE1,${fastqFilenamePE1}${gzipExtension}
 compressedFastqFilenamePE2,${fastqFilenamePE2}${gzipExtension}
 
 
-demultiplexedSampleFastqFilenameSR,${filenamePrefix}_${barcode_combined}${fastqExtension}
-demultiplexedSampleFastqFilenamePE1,${filenamePrefix}_${barcode_combined}_${filenameSuffixPE1}${fastqExtension}
-demultiplexedSampleFastqFilenamePE2,${filenamePrefix}_${barcode_combined}_${filenameSuffixPE2}${fastqExtension}
+demultiplexedSampleFastqFilenameSR,${runPrefix}_${barcode_combined}${fastqExtension}
+demultiplexedSampleFastqFilenamePE1,${runPrefix}_${barcode_combined}_${filenameSuffixPE1}${fastqExtension}
+demultiplexedSampleFastqFilenamePE2,${runPrefix}_${barcode_combined}_${filenameSuffixPE2}${fastqExtension}
 
-demultiplexedDiscardedFastqFilenameSR,${filenamePrefix}_${filenameSuffixDiscardedReads}${fastqExtension}
-demultiplexedDiscardedFastqFilenamePE1,${filenamePrefix}_${filenameSuffixDiscardedReads}_${filenameSuffixPE1}${fastqExtension}
-demultiplexedDiscardedFastqFilenamePE2,${filenamePrefix}_${filenameSuffixDiscardedReads}_${filenameSuffixPE2}${fastqExtension}
+demultiplexedDiscardedFastqFilenameSR,${runPrefix}_${filenameSuffixDiscardedReads}${fastqExtension}
+demultiplexedDiscardedFastqFilenamePE1,${runPrefix}_${filenameSuffixDiscardedReads}_${filenameSuffixPE1}${fastqExtension}
+demultiplexedDiscardedFastqFilenamePE2,${runPrefix}_${filenameSuffixDiscardedReads}_${filenameSuffixPE2}${fastqExtension}
 
 
 compressedDemultiplexedSampleFastqFilenameSR,${demultiplexedSampleFastqFilenameSR}${gzipExtension}

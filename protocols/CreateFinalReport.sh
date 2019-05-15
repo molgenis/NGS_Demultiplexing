@@ -5,9 +5,9 @@
 #string arrayDir
 #string sampleSheet
 #string workDir
-#string runPrefix
+#string filePrefix
 #string ngsUtilsVersion
-#string runResultsDir
+#string ngsDir
 #string intermediateDir
 #string nextSeqRunDataDir
 #string stage
@@ -22,8 +22,8 @@ ${stage} "${ngsUtilsVersion}"
 
 echo "final report created"
 
-echo "creating ${runResultsDir}/Info/"
-mkdir ${runResultsDir}/Info/
-rsync -rv ${nextSeqRunDataDir}/InterOp ${runResultsDir}/Info/
-rsync -v ${nextSeqRunDataDir}/RunInfo.xml ${runResultsDir}/Info/
-rsync -v ${nextSeqRunDataDir}/*unParameters.xml ${runResultsDir}/Info/
+echo "creating ${ngsDir}/Info/"
+mkdir ${ngsDir}/Info/
+rsync -rv ${nextSeqRunDataDir}/InterOp ${ngsDir}/Info/
+rsync -v ${nextSeqRunDataDir}/RunInfo.xml ${ngsDir}/Info/
+rsync -v ${nextSeqRunDataDir}/*unParameters.xml ${ngsDir}/Info/

@@ -2,7 +2,8 @@
 #string sampleSheet
 #string MCsampleSheet
 #string workDir
-#string runPrefix
+#string ngsDir
+#string filePrefix
 #string runResultsDir
 #string dualBarcode
 #string intermediateDir
@@ -28,28 +29,28 @@ else
 fi
 if [ "${dualBarcode}" == "TRUE" ]
 then
-	echo "dual barcode MODE: copied samplesheet to ${workDir}/Samplesheets/${runPrefix}.csv.original"
-	cp "${workDir}/Samplesheets/${runPrefix}.csv" "${workDir}/Samplesheets/${runPrefix}.csv.original"
+	echo "dual barcode MODE: copied samplesheet to ${workDir}/Samplesheets/${filePrefix}.csv.original"
+	cp "${workDir}/Samplesheets/${filePrefix}.csv" "${workDir}/Samplesheets/${filePrefix}.csv.original"
 fi
-if [ ! -f "${generatedScriptsDir}/${runPrefix}.samplesheetConverted" ]
+if [ ! -f "${generatedScriptsDir}/${filePrefix}.samplesheetConverted" ]
 then
 	perl -pi -e 's|,barcode,|,barcode1,|' "${sampleSheet}"
 	perl -pi -e 's|,barcode_combined|,barcode|' "${sampleSheet}"
-	touch "${generatedScriptsDir}/${runPrefix}.samplesheetConverted"
+	touch "${generatedScriptsDir}/${filePrefix}.samplesheetConverted"
 fi
 
 if [ "${dualBarcode}" == "TRUE" ]
 then
-	cp -f "${sampleSheet}" "${workDir}/Samplesheets/${runPrefix}.csv"
+	cp -f "${sampleSheet}" "${workDir}/Samplesheets/${filePrefix}.csv"
 fi
 
 cp "${sampleSheet}" "${MCsampleSheet}"
-cp "${sampleSheet}" "${runResultsDir}/${runPrefix}.csv"
-chmod u+rw,u-x,g+r,g-wx,o-rwx "${runResultsDir}/${runPrefix}"*
+cp "${sampleSheet}" "${ngsDir}/${filePrefix}.csv"
+chmod u+rw,u-x,g+r,g-wx,o-rwx "${ngsDir}/${filePrefix}"*
 
-if [ ! -d "${workDir}/logs/${runPrefix}/" ]
+if [ ! -d "${workDir}/logs/${filePrefix}/" ]
 then
-	mkdir -p "${workDir}/logs/${runPrefix}/"
+	mkdir -p "${workDir}/logs/${filePrefix}/"
 fi
 
 HEADER=$(head -1 "${MCsampleSheet}")
@@ -78,7 +79,7 @@ then
 fi
 
 
-if [ ! -f "${workDir}/logs/${runPrefix}/run01.${SCRIPT_NAME}.finished" ]
+if [ ! -f "${workDir}/logs/${filePrefix}/run01.${SCRIPT_NAME}.finished" ]
 then
 	if curl -s -f -H "Content-Type: application/json" -X POST -d "{"username"="${USERNAME}", "password"="${PASSWORD}"}" https://${MOLGENISSERVER}/api/v1/login
 	then
@@ -87,39 +88,50 @@ then
 		curl -H "x-molgenis-token:${TOKEN}" -X POST -F"file=@${MCsampleSheet}" -FentityTypeId='status_samples' -Faction=add -Fnotify=false -FmetadataAction=ignore https://${MOLGENISSERVER}/plugin/importwizard/importFile
 	else
 		echo "curl couldn't connect to host, skipped the uploading of the samplesheet to ${MOLGENISSERVER}"
-		echo "curl couldn't connect to host, skipped the uploading of the samplesheet to ${MOLGENISSERVER}" > "${runResultsDir}/${runPrefix}.csv.uploadingFailed"
+		echo "curl couldn't connect to host, skipped the uploading of the samplesheet to ${MOLGENISSERVER}" > "${ngsDir}/${filePrefix}.csv.uploadingFailed"
 
 	fi
-	touch "${workDir}/logs/${runPrefix}/run01.${SCRIPT_NAME}.finished"
+	touch "${workDir}/logs/${filePrefix}/run01.${SCRIPT_NAME}.finished"
 else
 	echo "samplesheet already uploaded to ${MOLGENISSERVER}"
 
 fi
 
 arrayRejected=()
-fieldIndex=$(for i in $(ls "${runResultsDir}/"*".rejected"); do echo $i | awk '{n=split($0, array, "_")} END{ print n-1 }';done)
-for i in $(ls "${runResultsDir}/"*".rejected"); do echo $i | awk -v field="${fieldIndex}" 'BEGIN{FS="_"}{print $field}' ;done | uniq > "${runResultsDir}/rejectedBarcodes.txt"
+fieldIndex=$(for i in $(ls "${ngsDir}/"*".rejected"); do echo $i | awk '{n=split($0, array, "_")} END{ print n-1 }';done)
+for i in $(ls "${ngsDir}/"*".rejected"); do echo $i | awk -v field="${fieldIndex}" 'BEGIN{FS="_"}{print $field}' ;done | uniq > "${ngsDir}/rejectedBarcodes.txt"
 
-if [ ! -s "${runResultsDir}/rejectedBarcodes.txt" ]
+if [ ! -s "${ngsDir}/rejectedBarcodes.txt" ]
 then
-	rm "${runResultsDir}/rejectedBarcodes.txt"
+	rm "${ngsDir}/rejectedBarcodes.txt"
 fi
-printf "run_id,group,demultiplexing,copy_raw_prm,projects,date\n" > "${intermediateDir}/${runPrefix}_uploading.csv"
-printf "${runPrefix},${group},finished,,," >> "${intermediateDir}/${runPrefix}_uploading.csv"
+printf "run_id,group,demultiplexing,copy_raw_prm,projects,date\n" > "${intermediateDir}/${filePrefix}_uploading.csv"
+printf "${filePrefix},${group},finished,,," >> "${intermediateDir}/${filePrefix}_uploading.csv"
 
 if curl -s -f -H "Content-Type: application/json" -X POST -d "{"username"="${USERNAME}", "password"="${PASSWORD}"}" https://${MOLGENISSERVER}/api/v1/login
 then
 	CURLRESPONSE=$(curl -H "Content-Type: application/json" -X POST -d "{"username"="${USERNAME}", "password"="${PASSWORD}"}" https://${MOLGENISSERVER}/api/v1/login)
 	TOKEN=${CURLRESPONSE:10:32}
 
-	curl -H "x-molgenis-token:${TOKEN}" -X POST -F"file=@${intermediateDir}/${runPrefix}_uploading.csv" -FentityTypeId='status_overview' -Faction=update -FmetadataAction=ignore -Fnotify=false https://${MOLGENISSERVER}/plugin/importwizard/importFile
+	curl -H "x-molgenis-token:${TOKEN}" -X POST -F"file=@${intermediateDir}/${filePrefix}_uploading.csv" -FentityTypeId='status_overview' -Faction=update -FmetadataAction=ignore -Fnotify=false https://${MOLGENISSERVER}/plugin/importwizard/importFile
 else
 	echo "curl couldn't connect to host, skipped updating the status_overview of the samplesheet to ${MOLGENISSERVER}"
 fi
 
-if [ -f "${workDir}/logs/${runPrefix}/run01.demultiplexing.started" ]
+if [ -f "${workDir}/logs/${filePrefix}/run01.demultiplexing.started" ]
 then
-	mv "${workDir}/logs/${runPrefix}/run01.demultiplexing."{started,finished}
+	mv "${workDir}/logs/${filePrefix}/run01.demultiplexing."{started,finished}
 else
-	touch "${workDir}/logs/${runPrefix}/run01.demultiplexing.finished"
+	touch "${workDir}/logs/${filePrefix}/run01.demultiplexing.finished"
 fi
+cd "${runResultsDir}"
+
+IFS='\n' declare -a array=($(find ${ngsDir}/*.*))
+
+for i in "${array[@]}"
+do
+	ln -s "${i}" 
+done
+cd -
+
+echo "made symlinks from the rawdata/ngs folder to the results folder: ${runResultsDir}"
