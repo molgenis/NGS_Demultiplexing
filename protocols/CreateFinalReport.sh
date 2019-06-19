@@ -23,7 +23,7 @@ ${stage} "${ngsUtilsVersion}"
 echo "final report created"
 
 echo "creating ${ngsDir}/Info/"
-mkdir -p ${ngsDir}/Info/
-rsync -rv ${nextSeqRunDataDir}/InterOp ${ngsDir}/Info/
-rsync -v ${nextSeqRunDataDir}/RunInfo.xml ${ngsDir}/Info/
-rsync -v ${nextSeqRunDataDir}/*unParameters.xml ${ngsDir}/Info/
+mkdir -p "${ngsDir}/Info/"
+rsync -rv "${nextSeqRunDataDir}/InterOp" "${ngsDir}/Info/"
+rsync -v "${nextSeqRunDataDir}/RunInfo.xml" "${ngsDir}/Info/"
+rsync -v "${nextSeqRunDataDir}/"*"unParameters.xml" "${ngsDir}/Info/"

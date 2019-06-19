@@ -135,4 +135,4 @@ done
 cd -
 
 echo "made symlinks from the rawdata/ngs folder to the results folder: ${runResultsDir}"
-echo "finished: $(date +%FT%T%z)" >> ${workDir}/logs/${filePrefix}//run01.demultiplexing.totalRuntime
+echo "finished: $(date +%FT%T%z)" >> "${workDir}/logs/${filePrefix}//run01.demultiplexing.totalRuntime"
