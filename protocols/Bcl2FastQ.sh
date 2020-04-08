@@ -45,7 +45,7 @@ then
         rm -rf "${intermediateDir}/Stats"
 fi
 
-if [ ! -d ${ngsDir} ]
+if [ ! -d "${ngsDir}" ]
 then
 	mkdir -p "${ngsDir}"
 fi
