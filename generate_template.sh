@@ -6,33 +6,33 @@ set -u
 
 module list
 
-ENVIRONMENT_PARAMETERS=parameters_gattaca.csv
-RAWDATANAME=${1}
-WORKDIR=$2
-GROUP=$3
-WORKFLOW=${EBROOTNGS_DEMULTIPLEXING}/workflow.csv
+ENVIRONMENT_PARAMETERS="parameters_gattaca.csv"
+RAWDATANAME="${1}"
+WORKDIR="${2}"
+GROUP="${3}"
+WORKFLOW="${EBROOTNGS_DEMULTIPLEXING}/workflow.csv"
 echo "$WORKDIR AND $RAWDATANAME"
 echo "GROUPIE: $GROUP"
 
-if [ -f .compute.properties ];
+if [ -f ".compute.properties" ];
 then
-     rm .compute.properties
+     rm ".compute.properties"
 fi
 
-mkdir -p ${WORKDIR}/generatedscripts/${RAWDATANAME}/
-mkdir -p ${WORKDIR}/rawdata/ngs/${RAWDATANAME}/
+mkdir -p "${WORKDIR}/generatedscripts/${RAWDATANAME}/"
+mkdir -p "${WORKDIR}/rawdata/ngs/${RAWDATANAME}/"
 
-if [ -f ${WORKDIR}/generatedscripts/${RAWDATANAME}/out.csv  ];
+if [ -f "${WORKDIR}/generatedscripts/${RAWDATANAME}/out.csv"  ];
 then
-	rm -rf ${WORKDIR}/generatedscripts/${RAWDATANAME}/out.csv
+	rm -rf "${WORKDIR}/generatedscripts/${RAWDATANAME}/out.csv"
 fi
 
 #
 ###### Dual barcode checker
 #
-sampsheet=${WORKDIR}/generatedscripts/${RAWDATANAME}/${RAWDATANAME}.csv
+sampsheet="${WORKDIR}/generatedscripts/${RAWDATANAME}/${RAWDATANAME}.csv"
 
-mac2unix ${sampsheet}
+mac2unix "${sampsheet}"
 
 declare -a _sampleSheetColumnNames=()
 declare -A _sampleSheetColumnOffsets=()
@@ -60,22 +60,22 @@ if [[ -n "${_sampleSheetColumnOffsets["barcode"]+isset}" ]]; then
 fi
 
 ## Will return or nothing or in case there is a dualbarcode it will create a file
-perl ${EBROOTNGS_DEMULTIPLEXING}/convertParametersGitToMolgenis.pl ${EBROOTNGS_DEMULTIPLEXING}/parameters.csv > \
-${WORKDIR}/generatedscripts/${RAWDATANAME}/out.csv
+perl "${EBROOTNGS_DEMULTIPLEXING}/convertParametersGitToMolgenis.pl" "${EBROOTNGS_DEMULTIPLEXING}/parameters.csv" > \
+"${WORKDIR}/generatedscripts/${RAWDATANAME}/out.csv"
 
-perl ${EBROOTNGS_DEMULTIPLEXING}/convertParametersGitToMolgenis.pl ${EBROOTNGS_DEMULTIPLEXING}/${ENVIRONMENT_PARAMETERS} > \
-${WORKDIR}/generatedscripts/${RAWDATANAME}/environment_parameters.csv
+perl "${EBROOTNGS_DEMULTIPLEXING}/convertParametersGitToMolgenis.pl" "${EBROOTNGS_DEMULTIPLEXING}/${ENVIRONMENT_PARAMETERS}" > \
+"${WORKDIR}/generatedscripts/${RAWDATANAME}/environment_parameters.csv"
 
-perl ${EBROOTNGS_DEMULTIPLEXING}/convertParametersGitToMolgenis.pl ${EBROOTNGS_DEMULTIPLEXING}/parameters_${GROUP}.csv > \
-${WORKDIR}/generatedscripts/${RAWDATANAME}/parameters_group.csv
+perl "${EBROOTNGS_DEMULTIPLEXING}/convertParametersGitToMolgenis.pl" "${EBROOTNGS_DEMULTIPLEXING}/parameters_${GROUP}.csv" > \
+"${WORKDIR}/generatedscripts/${RAWDATANAME}/parameters_group.csv"
 
 bash $EBROOTMOLGENISMINCOMPUTE/molgenis_compute.sh \
--p ${WORKDIR}/generatedscripts/${RAWDATANAME}/out.csv \
--p ${WORKDIR}/generatedscripts/${RAWDATANAME}/parameters_group.csv \
--p ${WORKDIR}/generatedscripts/${RAWDATANAME}/environment_parameters.csv \
--p ${WORKDIR}/generatedscripts/${RAWDATANAME}/${RAWDATANAME}.csv \
--w ${WORKFLOW} \
--rundir ${WORKDIR}/runs/${RAWDATANAME}/jobs \
+-p "${WORKDIR}/generatedscripts/${RAWDATANAME}/out.csv" \
+-p "${WORKDIR}/generatedscripts/${RAWDATANAME}/parameters_group.csv" \
+-p "${WORKDIR}/generatedscripts/${RAWDATANAME}/environment_parameters.csv" \
+-p "${WORKDIR}/generatedscripts/${RAWDATANAME}/${RAWDATANAME}.csv" \
+-w "${WORKFLOW}" \
+-rundir "${WORKDIR}/runs/${RAWDATANAME}/jobs" \
 -o "dualBarcode=${dualBarcode};\
 demultiplexingversion=$(module list | grep -o -P 'NGS_Demultiplexing(.+)')" \
 -b slurm \
