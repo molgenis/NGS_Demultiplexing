@@ -15,7 +15,6 @@ WHOAMI=$(whoami)
 echo "Importing Samplesheet into ${MOLGENISSERVER}"
 
 SCRIPT_NAME="UploadSampleSheet"
-
 group=""
 
 if [[ "${runResultsDir}" == *"umcg-gaf"* ]]
@@ -26,22 +25,6 @@ then
 	group="umcg-gd"
 else
 	group="other"
-fi
-if [ "${dualBarcode}" == "TRUE" ]
-then
-	echo "dual barcode MODE: copied samplesheet to ${workDir}/Samplesheets/${filePrefix}.csv.original"
-	cp "${workDir}/Samplesheets/${filePrefix}.csv" "${workDir}/Samplesheets/${filePrefix}.csv.original"
-fi
-if [ ! -f "${generatedScriptsDir}/${filePrefix}.samplesheetConverted" ]
-then
-	perl -pi -e 's|,barcode,|,barcode1,|' "${sampleSheet}"
-	perl -pi -e 's|,barcode_combined|,barcode|' "${sampleSheet}"
-	touch "${generatedScriptsDir}/${filePrefix}.samplesheetConverted"
-fi
-
-if [ "${dualBarcode}" == "TRUE" ]
-then
-	cp -f "${sampleSheet}" "${workDir}/Samplesheets/${filePrefix}.csv"
 fi
 
 cp "${sampleSheet}" "${MCsampleSheet}"

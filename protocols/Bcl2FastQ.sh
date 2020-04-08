@@ -5,8 +5,10 @@
 #string checkStage
 #string sampleSheet
 #string run
+#string demultiplexingversion
 #string intermediateDir
 #string runJobsDir
+#string ngsDir
 #string prepKitsDir
 #string ngsUtilsVersion
 #string dualBarcode
@@ -43,6 +45,11 @@ then
         rm -rf "${intermediateDir}/Stats"
 fi
 
+if [ ! -d ${ngsDir} ]
+then
+	mkdir -p "${ngsDir}"
+fi
+
 cp "${sampleSheet}" "${runJobsDir}"
 
 echo "intermediateDir: ${intermediateDir}"
@@ -52,10 +59,12 @@ tmpIntermediateDir="${MC_tmpFile}"
 
 echo "tmpIntermediateDir: ${tmpIntermediateDir}"
 
+module load ${demultiplexingversion}
+
 if [ "${dualBarcode}" == "TRUE" ]
 then
 	echo "dualBarcode modus on"
-	CreateIlluminaSampleSheet_V2.pl \
+	perl ${EBROOTNGS_DEMULTIPLEXING}/CreateIlluminaSampleSheet_V3.pl \
 	-i "${sampleSheet}" \
 	-o "${tmpIntermediateDir}/Illumina_R${run}.csv" \
 	-r "${run}" \
