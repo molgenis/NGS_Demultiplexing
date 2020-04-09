@@ -96,7 +96,7 @@ _save_log() {
 		local _barcode=${_item%%:*}
 		local _count=${_item#*:}
 		local _percentage
-		_percentage=$(awk "BEGIN {printf \"%.4f\n\", ((_count/_total)*100)}")
+		_percentage=$(awk "BEGIN {printf \"%.4f\n\", (($_count/$_total)*100)}")
 		printf "${_prefix} %${_longest_barcode_length}s: %${_longest_read_count_length}d  (%4.1f%%)\n" "${_barcode}" "${_count}" "${_percentage}" >> "${_log_file}"
 	done
 	echo "${_sep}" >> "${_log_file}"

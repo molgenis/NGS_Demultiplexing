@@ -10,6 +10,7 @@
 #string generatedScriptsDir
 
 WHOAMI=$(whoami)
+# shellcheck source=/home/${WHOAMI}/molgenis.cfg
 . "/home/${WHOAMI}/molgenis.cfg"
 
 echo "Importing Samplesheet into ${MOLGENISSERVER}"
@@ -40,21 +41,21 @@ then
 fi
 
 HEADER=$(head -1 "${MCsampleSheet}")
-IFS=',' array=($HEADER)
-count=0
-groupNameBool="false"
+IFS=',' array=("${HEADER}")
+
+groupNameBool='false'
 for i in "${array[@]}"
 do
-	if [ "${i}" == "groupName" ]
+	if [ "${i}" == 'groupName' ]
         then
-		groupNameBool="true"
+		groupNameBool='true'
         fi
 done
-if [ "${groupNameBool}" == "false" ]
+if [ "${groupNameBool}" == 'false' ]
 then
-	externalSampleID=$(head -1 ${MCsampleSheet}  | awk 'BEGIN {FS=","}{for (i==1 ; i <=NF; i++){ if ($i=="externalSampleID"){printf i}}}')
-        project=$(head -1 ${MCsampleSheet}  | awk 'BEGIN {FS=","}{for (i==1 ; i <=NF; i++){ if ($i=="project"){printf i}}}')
-        lane=$(head -1 ${MCsampleSheet}  | awk 'BEGIN {FS=","}{for (i==1 ; i <=NF; i++){ if($i=="lane"){printf i}}}')
+	externalSampleID=$(head -1 "${MCsampleSheet}"  | awk 'BEGIN {FS=","}{for (i==1 ; i <=NF; i++){ if ($i=="externalSampleID"){printf i}}}')
+        project=$(head -1 "${MCsampleSheet}"  | awk 'BEGIN {FS=","}{for (i==1 ; i <=NF; i++){ if ($i=="project"){printf i}}}')
+        lane=$(head -1 "${MCsampleSheet}"  | awk 'BEGIN {FS=","}{for (i==1 ; i <=NF; i++){ if($i=="lane"){printf i}}}')
 
 	awk -v ext="${externalSampleID}" 'BEGIN{FS=","}{print $ext}' "${MCsampleSheet}" | awk 'BEGIN{FS="_"}{if (NR==1){print "famnr,umcgnr,dnanr,onderzoeknr,archiveLocation"} else {print $1","$2","$3","$4",prm03"}}' > "${MCsampleSheet}.splittedExtID"
 	awk -v var="${group}" -v ext="${externalSampleID}" -v pro="$project" -v la="$lane" 'BEGIN{FS=","}{if (NR==1){print $0",groupName,uniqueID"}else{print $0","var","$ext"_"$pro"_"$la}}' "${MCsampleSheet}" > "${MCsampleSheet}.add"
@@ -83,16 +84,17 @@ else
 
 fi
 
-arrayRejected=()
-fieldIndex=$(for i in $(ls "${ngsDir}/"*".rejected"); do echo $i | awk '{n=split($0, array, "_")} END{ print n-1 }';done)
-for i in $(ls "${ngsDir}/"*".rejected"); do echo $i | awk -v field="${fieldIndex}" 'BEGIN{FS="_"}{print $field}' ;done | uniq > "${ngsDir}/rejectedBarcodes.txt"
+fieldIndex=$(for i in  "${ngsDir}/"*".rejected" ; do [[ -e "${i}" ]] || break ;  echo "${i}" | awk '{n=split($0, array, "_")} END{ print n-1 }';done)
+for i in "${ngsDir}/"*".rejected"; do [[ -e "${i}" ]] || break ; echo "${i}" | awk -v field="${fieldIndex}" 'BEGIN{FS="_"}{print $field}' ;done | uniq > "${ngsDir}/rejectedBarcodes.txt"
 
 if [ ! -s "${ngsDir}/rejectedBarcodes.txt" ]
 then
 	rm "${ngsDir}/rejectedBarcodes.txt"
 fi
 printf "run_id,group,process_raw_data,copy_raw_prm,projects,date\n" > "${intermediateDir}/${filePrefix}_uploading.csv"
-printf "${filePrefix},${group},finished,,," >> "${intermediateDir}/${filePrefix}_uploading.csv"
+
+### SC2059: Don not use variables in the printf format string..
+printf "$filePrefix,$group,finished,,," >> "${intermediateDir}/${filePrefix}_uploading.csv"
 
 if curl -s -f -H "Content-Type: application/json" -X POST -d "{"username"="${USERNAME}", "password"="${PASSWORD}"}" https://${MOLGENISSERVER}/api/v1/login
 then
@@ -110,15 +112,15 @@ then
 else
 	touch "${workDir}/logs/${filePrefix}/run01.demultiplexing.finished"
 fi
-cd "${runResultsDir}"
+cd "${runResultsDir}" || exit
 
-IFS='\n' declare -a array=($(find ${ngsDir}/*.*))
-
+while IFS='\n' read -r line; do array+=("$line"); done < <(find "${ngsDir}"/*.*)
 for i in "${array[@]}"
 do
 	ln -s "${i}" 
 done
-cd -
+
+cd - || exit
 
 echo "made symlinks from the rawdata/ngs folder to the results folder: ${runResultsDir}"
 echo "finished: $(date +%FT%T%z)" >> "${workDir}/logs/${filePrefix}//run01.demultiplexing.totalRuntime"
