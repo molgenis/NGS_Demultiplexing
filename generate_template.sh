@@ -44,7 +44,7 @@ IFS="," read -r -a _sampleSheetColumnNames <<< "$(head -1 "${sampsheet}")"
 	done
 dualBarcode="unknown"
 if [[ -n "${_sampleSheetColumnOffsets["barcode"]+isset}" ]]; then
-	barcodeFieldIndex=$((${_sampleSheetColumnOffsets["barcode"]} + 1))
+	barcodeFieldIndex=$((_sampleSheetColumnOffsets["barcode"] + 1))
 	readarray -t barcodes< <(tail -n +2 "${sampsheet}" | cut -d "," -f "${barcodeFieldIndex}" | sort | uniq )
 	for barcode in "${barcodes[@]}"
 	do

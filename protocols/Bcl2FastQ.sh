@@ -64,7 +64,7 @@ module load "${demultiplexingversion}"
 if [ "${dualBarcode}" == "TRUE" ]
 then
 	echo "dualBarcode modus on"
-	perl ${EBROOTNGS_DEMULTIPLEXING}/CreateIlluminaSampleSheet_V3.pl \
+	perl "${EBROOTNGS_DEMULTIPLEXING}"/CreateIlluminaSampleSheet_V3.pl \
 	-i "${sampleSheet}" \
 	-o "${tmpIntermediateDir}/Illumina_R${run}.csv" \
 	-r "${run}" \
