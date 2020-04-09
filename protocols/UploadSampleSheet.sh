@@ -23,6 +23,9 @@ then
 elif [[ "${runResultsDir}" == *"umcg-gd"* ]]
 then
 	group="umcg-gd"
+elif [[ "${runResultsDir}" == *"umcg-atd"* ]]
+then
+	group="umcg-atd"
 else
 	group="other"
 fi
@@ -88,7 +91,7 @@ if [ ! -s "${ngsDir}/rejectedBarcodes.txt" ]
 then
 	rm "${ngsDir}/rejectedBarcodes.txt"
 fi
-printf "run_id,group,demultiplexing,copy_raw_prm,projects,date\n" > "${intermediateDir}/${filePrefix}_uploading.csv"
+printf "run_id,group,process_raw_data,copy_raw_prm,projects,date\n" > "${intermediateDir}/${filePrefix}_uploading.csv"
 printf "${filePrefix},${group},finished,,," >> "${intermediateDir}/${filePrefix}_uploading.csv"
 
 if curl -s -f -H "Content-Type: application/json" -X POST -d "{"username"="${USERNAME}", "password"="${PASSWORD}"}" https://${MOLGENISSERVER}/api/v1/login
@@ -96,7 +99,7 @@ then
 	CURLRESPONSE=$(curl -H "Content-Type: application/json" -X POST -d "{"username"="${USERNAME}", "password"="${PASSWORD}"}" https://${MOLGENISSERVER}/api/v1/login)
 	TOKEN=${CURLRESPONSE:10:32}
 
-	curl -H "x-molgenis-token:${TOKEN}" -X POST -F"file=@${intermediateDir}/${filePrefix}_uploading.csv" -FentityTypeId='status_overview' -Faction=update -FmetadataAction=ignore -Fnotify=false https://${MOLGENISSERVER}/plugin/importwizard/importFile
+	curl -H "x-molgenis-token:${TOKEN}" -X POST -F"file=@${intermediateDir}/${filePrefix}_uploading.csv" -FentityTypeId='status_overview' -Faction=add_update_existing -FmetadataAction=ignore -Fnotify=false https://${MOLGENISSERVER}/plugin/importwizard/importFile
 else
 	echo "curl couldn't connect to host, skipped updating the status_overview of the samplesheet to ${MOLGENISSERVER}"
 fi
