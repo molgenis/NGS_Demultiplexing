@@ -50,10 +50,8 @@ if [[ -n "${_sampleSheetColumnOffsets["barcode"]+isset}" ]]; then
 	do
 		if [[ "${barcode}" == *"-"* ]]
 		then
-			echo "TRUE"
 			dualBarcode="TRUE"
 		else
-			echo "false"
 			dualBarcode="FALSE"
 		fi
 	done
@@ -81,5 +79,3 @@ demultiplexingversion=$(module list | grep -o -P 'NGS_Demultiplexing(.+)')" \
 -b slurm \
 -weave \
 --generate
-
-fi

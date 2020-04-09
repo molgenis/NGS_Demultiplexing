@@ -18,7 +18,7 @@ for ((sampleNumber = 0; sampleNumber <= max_index; sampleNumber++))
 do
 	if [ "${seqType}" == "SR" ]
 	then
-		if [[ ${barcode[sampleNumber]} == "None" || ${barcodeType[sampleNumber]} == "" ]]
+		if [[ "${barcode[sampleNumber]}" == "None" || "${barcodeType[sampleNumber]}" == "" ]]
 		then
 			# Process lane FastQ files for lane without barcodes or with GAF barcodes.
 			cd "${intermediateDir}"
@@ -50,7 +50,7 @@ do
 
 	elif [ "${seqType}" == "PE" ]
 	then
-		if [[ ${barcode[sampleNumber]} == "None" || ${barcode[sampleNumber]} == "" ]]
+		if [[ "${barcode[sampleNumber]}" == "None" || "${barcode[sampleNumber]}" == "" ]]
 		then
 			cd "${intermediateDir}"
 			md5sum lane${lane}_None_S[0-9]*_L00${lane}_R1_001.fastq.gz >  ${ngsDir}/${filePrefix}_L${lane}_1.fq.gz.md5

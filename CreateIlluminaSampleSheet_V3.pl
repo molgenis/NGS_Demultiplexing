@@ -196,7 +196,7 @@ if ($@) {
 
 my @sequence_types;
 # extract these columns:
-my ($internalSampleID, $externalSampleID, $sequencingStartDate, $sequencer, $run, $flowcell, $lane, $barcode1, $barcode2, $barcodeType, $seqType, $prepKit);
+my ($internalSampleID, $externalSampleID, $sequencingStartDate, $sequencer, $run, $flowcell, $lane, $barcode, $barcode1, $barcode2, $barcodeType, $seqType, $prepKit);
 my $experiment_count = 0;
 
 while (<$input_fh>) {

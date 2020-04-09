@@ -59,7 +59,7 @@ tmpIntermediateDir="${MC_tmpFile}"
 
 echo "tmpIntermediateDir: ${tmpIntermediateDir}"
 
-module load ${demultiplexingversion}
+module load "${demultiplexingversion}"
 
 if [ "${dualBarcode}" == "TRUE" ]
 then
