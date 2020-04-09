@@ -99,7 +99,7 @@ then
 	CURLRESPONSE=$(curl -H "Content-Type: application/json" -X POST -d "{"username"="${USERNAME}", "password"="${PASSWORD}"}" https://${MOLGENISSERVER}/api/v1/login)
 	TOKEN=${CURLRESPONSE:10:32}
 
-	curl -H "x-molgenis-token:${TOKEN}" -X POST -F"file=@${intermediateDir}/${filePrefix}_uploading.csv" -FentityTypeId='status_overview' -Faction=add_update_existing -FmetadataAction=ignore -Fnotify=false https://${MOLGENISSERVER}/plugin/importwizard/importFile
+	curl -H "Content-Type:application/json" -H "x-molgenis-token:${TOKEN}" -X PUT -d "finished" "https://${MOLGENISSERVER}/api/v1/status_overview/${filePrefix}/process_raw_data" 
 else
 	echo "curl couldn't connect to host, skipped updating the status_overview of the samplesheet to ${MOLGENISSERVER}"
 fi

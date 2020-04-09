@@ -67,7 +67,7 @@ perl "${EBROOTNGS_DEMULTIPLEXING}/convertParametersGitToMolgenis.pl" "${EBROOTNG
 perl "${EBROOTNGS_DEMULTIPLEXING}/convertParametersGitToMolgenis.pl" "${EBROOTNGS_DEMULTIPLEXING}/parameters_${GROUP}.csv" > \
 "${WORKDIR}/generatedscripts/${RAWDATANAME}/parameters_group.csv"
 
-bash $EBROOTMOLGENISMINCOMPUTE/molgenis_compute.sh \
+bash "${EBROOTMOLGENISMINCOMPUTE}/molgenis_compute.sh" \
 -p "${WORKDIR}/generatedscripts/${RAWDATANAME}/out.csv" \
 -p "${WORKDIR}/generatedscripts/${RAWDATANAME}/parameters_group.csv" \
 -p "${WORKDIR}/generatedscripts/${RAWDATANAME}/environment_parameters.csv" \
