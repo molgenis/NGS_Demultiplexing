@@ -54,9 +54,9 @@ compressedFastqFilenamePE1,${fastqFilenamePE1}${gzipExtension}
 compressedFastqFilenamePE2,${fastqFilenamePE2}${gzipExtension}
 
 
-demultiplexedSampleFastqFilenameSR,${runPrefix}_${barcode_combined}${fastqExtension}
-demultiplexedSampleFastqFilenamePE1,${runPrefix}_${barcode_combined}_${filenameSuffixPE1}${fastqExtension}
-demultiplexedSampleFastqFilenamePE2,${runPrefix}_${barcode_combined}_${filenameSuffixPE2}${fastqExtension}
+demultiplexedSampleFastqFilenameSR,${runPrefix}_${barcode}${fastqExtension}
+demultiplexedSampleFastqFilenamePE1,${runPrefix}_${barcode}_${filenameSuffixPE1}${fastqExtension}
+demultiplexedSampleFastqFilenamePE2,${runPrefix}_${barcode}_${filenameSuffixPE2}${fastqExtension}
 
 demultiplexedDiscardedFastqFilenameSR,${runPrefix}_${filenameSuffixDiscardedReads}${fastqExtension}
 demultiplexedDiscardedFastqFilenamePE1,${runPrefix}_${filenameSuffixDiscardedReads}_${filenameSuffixPE1}${fastqExtension}
