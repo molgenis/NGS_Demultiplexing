@@ -27,7 +27,7 @@ csv_with_prefix(){
 	((n_elements=${#items[@]}, max_index=n_elements - 1))
 	for ((item = 0; item <= max_index; item++))
 	do
-		if (( $item == max_index ))
+		if (( item == max_index ))
 		then
 			result+="$prefix${items[$item]}"
 		else
@@ -45,7 +45,7 @@ csv(){
 	((n_elements=${#items[@]}, max_index=n_elements - 1))
 	for ((item = 0; item <= max_index; item++))
 	do
-		if (( $item == max_index ))
+		if (( item == max_index ))
 		then
 			result+="${items[$item]}"
 		else
@@ -59,13 +59,13 @@ csv(){
 _count_reads() {
 	local    _fastq=$1
 	local    _barcode=$2
-	local -i _lines=$(gzip -cd ${_fastq} | wc -l)
-	local -i _reads=$((${_lines}/4))
-	if [ ${#_reads} -gt ${longest_read_count_length} ]; then
+	local -i _lines=$(gzip -cd "${_fastq}" | wc -l)
+	local -i _reads=$((_lines/4))
+	if [ ${#_reads} -gt "${longest_read_count_length}" ]; then
 		longest_read_count_length=${#_reads}
 	fi
 
-	if [ ${#_barcode} -gt ${longest_barcode_length} ]; then
+	if [ ${#_barcode} -gt "${longest_barcode_length}" ]; then
 		longest_barcode_length=${#_barcode}
 	fi
 	eval "$3=${_reads}"
@@ -75,27 +75,28 @@ _save_log() {
 	local -i _fixed_extra_line_length=13
 	local -i _longest_barcode_length=$1
 	local -i _longest_read_count_length=$2
-	local -i _max_line_length=$((${_fixed_extra_line_length}+${_longest_barcode_length}+${_longest_read_count_length}))
+	local -i _max_line_length=$((_fixed_extra_line_length+_longest_barcode_length+_longest_read_count_length))
 	local    _col_header="$3"
 	local    _prefix='INFO:'
-	local    _sep=`echo -n ${_prefix}; eval printf '=%.0s' {1..$_max_line_length}; echo`
+	local    _sep=$(echo -n ${_prefix}; eval printf '=%.0s' {1..$_max_line_length}; echo)
 	local -i _total=$4
 	local    _label="$5"
 	local    _log_file="$6"
 	local -a _counts=("${!7}")
-	echo "${_prefix} Demultiplex statistics for:" > ${log}
-	echo "${_prefix} ${_label}" >> ${log}
-	echo "${_sep}" >> ${log}
-	printf "${_prefix} %${_longest_barcode_length}s: %${_longest_read_count_length}s      (%%)\n" 'Barcode' "${_col_header}" >> ${log}
-	echo "${_sep}" >> ${log}
+	echo "${_prefix} Demultiplex statistics for:" > "${_log_file}"
+	echo "${_prefix} ${_label}" >> "${_log_file}"
+	echo "${_sep}" >> "${_log_file}"
+	printf "${_prefix} %${_longest_barcode_length}s: %${_longest_read_count_length}s      (%%)\n" 'Barcode' "${_col_header}" >> "${_log_file}"
+	echo "${_sep}" >> "${_log_file}"
 	for _item in "${_counts[@]}"
 	do
 		local _barcode=${_item%%:*}
 		local _count=${_item#*:}
-		local _percentage=$(awk "BEGIN {printf \"%.4f\n\", (($_count/$_total)*100)}")
-		printf "${_prefix} %${_longest_barcode_length}s: %${_longest_read_count_length}d  (%4.1f%%)\n" ${_barcode} ${_count} ${_percentage} >> ${log}
+		local _percentage
+		_percentage=$(awk "BEGIN {printf \"%.4f\n\", (($_count/$_total)*100)}")
+		printf "${_prefix} %${_longest_barcode_length}s: %${_longest_read_count_length}d  (%4.1f%%)\n" "${_barcode}" "${_count}" "${_percentage}" >> "${_log_file}"
 	done
-	echo "${_sep}" >> ${log}
+	echo "${_sep}" >> "${_log_file}"
 }
 
 #
@@ -198,13 +199,13 @@ then
 			echo "FATAL: Number of reads in both ${label}_${barcode} FastQ files not the same!"
 			exit 1
 		fi
-		read_pair_counts=(${read_pair_counts[@]-} ${barcodeD}:${reads_1})
+		read_pair_counts=("${read_pair_counts[@]-}" "${barcodeD}":"${reads_1}")
 		((total_read_pairs+=reads_1))
 
 		((n_elements=${#compressedDemultiplexedSampleFastqFilenamePE1[@]}, max_index=n_elements - 1))
 		for ((fileToCheck = 0; fileToCheck <= max_index; fileToCheck++))
 		do
-		barcodeR=${barcode[fileToCheck]}
+		barcodeR="${barcode[fileToCheck]}"
 		fastq_1=${ngsDir}/${compressedDemultiplexedSampleFastqFilenamePE1[fileToCheck]}
 		fastq_2=${ngsDir}/${compressedDemultiplexedSampleFastqFilenamePE2[fileToCheck]}
 		reads_1=-1
@@ -230,7 +231,7 @@ then
 	fi
 
 fi
-cd "${ngsDir}"
+cd "${ngsDir}" || exit
 mv "${fluxDir}/${runPrefix}"* .
 echo "moved ${fluxDir}/${runPrefix}* ."
 
@@ -238,15 +239,15 @@ echo "moved ${fluxDir}/${runPrefix}* ."
 awk '/DISCARDED/{y=1;next}y' ${runPrefix}.demultiplex.log | awk -F '[()]' '{print $2}' | awk '{gsub(/ /,"",$0);print substr($0,1,length($0)-1)}' | sed '$ d' > ${runPrefix}.percentages.tmp
 awk '/DISCARDED/{y=1;next}y' ${runPrefix}.demultiplex.log | awk -F ':' '{print $2}' | sed '$ d' > ${runPrefix}.barcodes.tmp
 
-paste -d'\t' ${runPrefix}.barcodes.tmp ${runPrefix}.percentages.tmp > ${runPrefix}.barcodesPercentages.tmp
+paste -d'\t' "${runPrefix}.barcodes.tmp" "${runPrefix}.percentages.tmp" > "${runPrefix}.barcodesPercentages.tmp"
 
-awk -v fileName="${runPrefix}" '{if ($2==0.0){print "percentage="$2 > fileName"_"$1"_1.fq.gz.rejected"}}' ${runPrefix}.barcodesPercentages.tmp
-awk -v fileName="${runPrefix}" '{if ($2==0.0){print "percentage="$2 > fileName"_"$1"_2.fq.gz.rejected"}}' ${runPrefix}.barcodesPercentages.tmp
+awk -v fileName="${runPrefix}" '{if ($2==0.0){print "percentage="$2 > fileName"_"$1"_1.fq.gz.rejected"}}' "${runPrefix}.barcodesPercentages.tmp"
+awk -v fileName="${runPrefix}" '{if ($2==0.0){print "percentage="$2 > fileName"_"$1"_2.fq.gz.rejected"}}' "${runPrefix}.barcodesPercentages.tmp"
 
 
 rm *.tmp
 rejectedReads="false"
-if ls ${runPrefix}*_1.fq.gz.rejected
+if ls "${runPrefix}"*_1.fq.gz.rejected
 then
 	rejectedReads="true"
 fi
@@ -256,13 +257,13 @@ SCRIPT_NAME="${SCRIPT_NAME%.*sh}"
 SCRIPT_NAME="${SCRIPT_NAME%_*}"
 
 discarded=$(fgrep "DISCARDED" ${runPrefix}.demultiplex.log | awk -F '[()]' '{print $2}' | awk '{gsub(/ /,"",$0);print substr($0,1,length($0)-3)}')
-if [[ ${discarded} -gt 75 ]]
+if [[ "${discarded}" -gt 75 ]]
 then
 	echo "discarded percentage (${discarded}%) is higher than 75 procent, exiting"
 
 	if [[ -r ../../../logs/${SCRIPT_NAME}.mailinglist ]]
 	then
-		mailingList=$(cat ../../../logs/${SCRIPTNAME}.mailinglist)
+		mailingList=$(cat ../../../logs/${SCRIPT_NAME}.mailinglist)
 		echo -e "Hallo allen,\ndiscarded percentage (${discarded}%) is higher than 75 procent\nDe demultiplexing pipeline is er dan ook mee gestopt, omdat een te hoog percentage\ndiscarded reads vaak een indicatie is dat er iets mis is met de barcodes oid\n\ngroeten van het GCC" | mail -s "${runPrefix} crashed due to too high percentage of discarded reads" "${mailingList}"
 	fi
         exit 1
@@ -274,11 +275,12 @@ then
 
                 echo -e "Hallo allen,\n\nDe volgende barcodes zijn afgekeurd op basis van een te laag percentage reads per barcode):\n" > mailText.txt
 
-		for i in $(ls ${runPrefix}*_1.fq.gz.rejected)
+		for i in ${runPrefix}*_1.fq.gz.rejected
 		do
-			percentage="$(awk 'BEGIN {FS":"}{print $2}' $i)"
+			[[ -e ${i} ]] || break
+			percentage="$(awk 'BEGIN {FS":"}{print $2}' "${i}")"
 
-			barcodeGrep=$(echo ${i} | awk 'BEGIN {FS="_"}{print $6}')
+			barcodeGrep=$(echo "${i}" | awk 'BEGIN {FS="_"}{print $6}')
 			echo "grep ${barcodeGrep} ${sampleSheet}"
 			declare -a sampleSheetColumnNames=()
 			declare -A sampleSheetColumnOffsets=()
