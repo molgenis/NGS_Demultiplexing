@@ -115,7 +115,7 @@ fi
 cd "${runResultsDir}" || exit
 
 while IFS='\n' read -r line; do resultsArray+=("$line"); done < <(find "${ngsDir}/"*.*)
-for i in "${resulsArray[@]}"
+for i in "${resultsArray[@]}"
 do
 	ln -s "${i}" 
 done
