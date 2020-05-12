@@ -91,20 +91,6 @@ if [ ! -s "${ngsDir}/rejectedBarcodes.txt" ]
 then
 	rm "${ngsDir}/rejectedBarcodes.txt"
 fi
-printf "run_id,group,process_raw_data,copy_raw_prm,projects,date\n" > "${intermediateDir}/${filePrefix}_uploading.csv"
-
-### SC2059: Don not use variables in the printf format string..
-printf "$filePrefix,$group,finished,,," >> "${intermediateDir}/${filePrefix}_uploading.csv"
-
-if curl -s -f -H "Content-Type: application/json" -X POST -d "{"username"="${USERNAME}", "password"="${PASSWORD}"}" https://${MOLGENISSERVER}/api/v1/login
-then
-	CURLRESPONSE=$(curl -H "Content-Type: application/json" -X POST -d "{"username"="${USERNAME}", "password"="${PASSWORD}"}" https://${MOLGENISSERVER}/api/v1/login)
-	TOKEN=${CURLRESPONSE:10:32}
-
-	curl -H "Content-Type:application/json" -H "x-molgenis-token:${TOKEN}" -X PUT -d "finished" "https://${MOLGENISSERVER}/api/v1/status_overview/${filePrefix}/process_raw_data" 
-else
-	echo "curl couldn't connect to host, skipped updating the status_overview of the samplesheet to ${MOLGENISSERVER}"
-fi
 
 if [ -f "${workDir}/logs/${filePrefix}/run01.demultiplexing.started" ]
 then
