@@ -8,6 +8,7 @@
 #string dualBarcode
 #string intermediateDir
 #string generatedScriptsDir
+#string nextSeqRunDataDir
 
 WHOAMI=$(whoami)
 # shellcheck source=/home/${WHOAMI}/molgenis.cfg
@@ -30,6 +31,12 @@ then
 else
 	group="other"
 fi
+
+echo "creating ${ngsDir}/Info/"
+mkdir -p "${ngsDir}/Info/"
+rsync -rv "${nextSeqRunDataDir}/InterOp" "${ngsDir}/Info/"
+rsync -v "${nextSeqRunDataDir}/RunInfo.xml" "${ngsDir}/Info/"
+rsync -v "${nextSeqRunDataDir}/"*"unParameters.xml" "${ngsDir}/Info/"
 
 cp "${sampleSheet}" "${MCsampleSheet}"
 cp "${sampleSheet}" "${ngsDir}/${filePrefix}.csv"
