@@ -36,6 +36,7 @@ echo "creating ${ngsDir}/Info/"
 mkdir -p "${ngsDir}/Info/"
 rsync -rv "${nextSeqRunDataDir}/InterOp" "${ngsDir}/Info/"
 rsync -v "${nextSeqRunDataDir}/RunInfo.xml" "${ngsDir}/Info/"
+rsync -v "${nextSeqRunDataDir}/RunCompletionStatus.xml" "${ngsDir}/Info/"
 rsync -v "${nextSeqRunDataDir}/"*"unParameters.xml" "${ngsDir}/Info/"
 
 cp "${sampleSheet}" "${MCsampleSheet}"
