@@ -54,9 +54,22 @@ then
 fi
 
 
-if [ -f "${workDir}/logs/${filePrefix}/run01.processInterop.started" ]
-then
-	mv "${workDir}/logs/${filePrefix}/run01.processInterop."{started,finished}
-else
-	touch "${workDir}/logs/${filePrefix}/run01.processInterop.finished"
-fi
+touch "${workDir}/logs/${filePrefix}/run01.demultiplexing.started"
+
+
+#################Dit stuk later aanpassen, naar hoe de diagnostiek het wil. Dit werkt ook nog niet, kan niet met komma getallen overweg.##################
+#if [ "${Q30}" -lt 100 ]
+#then
+#	echo -e "Sequence run: ${nextSeqRunDataDir}, has a Q30 of ${Q30}, this is below the threshold of 70%." > "${workDir}/logs/${filePrefix}/run01.demultiplexing.failed"
+#
+#elif [ "${ClusterDensity}" -lt 170 ] || [ "${ClusterDensity}" -gt 230 ]
+#then
+#	echo -e "Sequence run: ${nextSeqRunDataDir}, has a Cluster density of ${ClusterDensity}, this is not whithin the specifications of 180-220 k/mm2." > "${workDir}/logs/${filePrefix}/run01.demultiplexing.failed"
+#
+#elif [ "${ClustersPassingfilter}" -lt 100]
+#then
+#	echo -e "Sequence run: ${nextSeqRunDataDir}, has a Cluster passing filter of ${ClustersPassingfilter}%, this is below the threshold of 70%." > "${workDir}/logs/${filePrefix}/run01.demultiplexing.failed"
+#else
+#	touch "${workDir}/logs/${filePrefix}/run01.demultiplexing.started"
+#fi
+##################
