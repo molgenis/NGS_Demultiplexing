@@ -1,6 +1,6 @@
 step,protocol,dependencies
 s01_processInterop,protocols/processInterop.sh,
-s02_Bcl2FastQ,protocols/Bcl2FastQ.sh,s0_processInterop
-s03_Illumina2GafFastQ,protocols/Illumina2GafFastQ.sh,s1_Bcl2FastQ
-s04_Demultiplex,protocols/Demultiplex.sh,s2_Illumina2GafFastQ
-s05_UploadSampleSheet,protocols/UploadSampleSheet.sh,s3_Demultiplex
+s02_Bcl2FastQ,protocols/Bcl2FastQ.sh,s01_processInterop
+s03_Illumina2GafFastQ,protocols/Illumina2GafFastQ.sh,s02_Bcl2FastQ
+s04_Demultiplex,protocols/Demultiplex.sh,s03_Illumina2GafFastQ
+s05_UploadSampleSheet,protocols/UploadSampleSheet.sh,s04_Demultiplex
