@@ -38,8 +38,8 @@ echo "date:${day}/${month}/${year}"
 sequencingDate="${day}/${month}/20${year}"
 echo "sequencingDate:${sequencingDate}"
 
-echo -e "Sample\trun\tdata\n${filePrefix}\trun01\t${sequencingDate}" > "${ngsDir}/Info/run_data_info.csv"
-echo -e "Sample\tClusterDensity(K/mm2)\tClustersPassingFilter(%)\tPercentage>=Q30\n${filePrefix}\t${ClusterDensity}\t${ClustersPassingfilter}\t${Q30}" > "${ngsDir}/Info/multiqc_sequence_stats.txt"
+echo -e "Sample,Run,Date\n${filePrefix},run01,${sequencingDate}" > "${ngsDir}/Info/SequenceRun_run_date_info.csv"
+echo -e "Sample\tClusterDensity(K/mm2)\tClustersPassingFilter(%)\tPercentage>=Q30\n${filePrefix}\t${ClusterDensity}\t${ClustersPassingfilter}\t${Q30}" > "${ngsDir}/Info/SequenceRun.csv"
 
 
 #deze zouden waarschijnlijk niet eens mee hoeven.
