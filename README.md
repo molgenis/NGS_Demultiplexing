@@ -46,7 +46,7 @@ The Bcl files produced by the Illumina sequencers (MiSeq,NextSeq etc), needs to 
 
 ### Step 3: Illumina2GafFastQ 
 The Illumina FastQ files have to be renamed to a format that can be used by the downstream pipeline
-.fastq.gz
+
 **Scriptname:** Illumina2GafFastQ<br/>
 **Input:** Illumina FastQ files (lane${lane}_${barcode_combined[sampleNumber]}_S[0-9]*_L00${lane}_R1_001.fastq.gz)<br/>
 **Output:** (${filePrefix}_${lane}_${barcode}.fastq.gz)*<br/>
@@ -69,9 +69,9 @@ Samplesheet will be copied to the track and trace server (molgenis server).
 To run a demultiplexing pipeline you need to have a samplesheet with the same name as the sequence run(e.g. STARTDATE_SEQ_RUNNR_FLOWCELLXX.csv)
 
 ```bash
-SCR_ROOT_DIR =${root}/groups/${groupname}/${tmpDir}/
+SCR_ROOT_DIR=${root}/groups/${groupname}/${tmpDir}/
 mkdir ${SCR_ROOT_DIRpDir}/generatedscripts/STARTDATE_SEQ_RUNNR_FLOWCELLXX
-SCR_ROOT_DIR =${root}/groups/${groupname}/${tmpDir}/
+SCR_ROOT_DIR=${root}/groups/${groupname}/${tmpDir}/
 
 scp –r STARTDATE_SEQ_RUNNR_FLOWCELLXX username@yourcluster:/groups/${groupname}/${tmpDir}/generatedscripts/
 
@@ -80,9 +80,11 @@ module load NGS_Demultiplexing
 cd ${root}/groups/${groupname}/${tmpDir}/generatedscripts/STARTDATE_SEQ_RUNN_FLOWCELLXX
 cp ${EBROOTNGS_Demultiplexing}/generate_template.sh .
 bash generate_template.sh "${project}" "${SCR_ROOT_DIR}" "${group}"
+```
 
-navigate to jobs folder (this will be outputted at the step before this one).
+Navigate to jobs folder (this will be outputted at the step before this one). And than submit the jobs.
 
+```bash
 bash submit.sh
 ```
 
