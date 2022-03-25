@@ -23,12 +23,17 @@ mkdir -p "${ngsDir}/Info/"
 
 Q30=$(summary "${nextSeqRunDataDir}" | grep Total | awk 'BEGIN{FS=","}{print $7}')
 echo "Q30:${Q30}"
-
-ClusterDensity=$(grep ClusterDensity "${nextSeqRunDataDir}/RunCompletionStatus.xml" | grep -Eo '[0-9]{1,9}[.][0-9]{1,9}')
-echo "ClusterDensity:${ClusterDensity}"
-ClustersPassingfilter=$(grep ClustersPassingFilter "${nextSeqRunDataDir}/RunCompletionStatus.xml" | grep -Eo '[0-9]{1,9}[.][0-9]{1,9}')
-echo "ClustersPassingfilter:${ClustersPassingfilter}"
-
+if [[ -f "${nextSeqRunDataDir}/RunCompletionStatus.xml" ]]
+then
+	ClusterDensity=$(grep ClusterDensity "${nextSeqRunDataDir}/RunCompletionStatus.xml" | grep -Eo '[0-9]{1,9}[.][0-9]{1,9}')
+	echo "ClusterDensity:${ClusterDensity}"
+	ClustersPassingfilter=$(grep ClustersPassingFilter "${nextSeqRunDataDir}/RunCompletionStatus.xml" | grep -Eo '[0-9]{1,9}[.][0-9]{1,9}')
+	echo "ClustersPassingfilter:${ClustersPassingfilter}"
+	rsync -v "${nextSeqRunDataDir}/RunCompletionStatus.xml" "${ngsDir}/Info/"
+else
+	ClusterDensity=""
+	ClustersPassingfilter=""
+fi
 year=$(summary "${nextSeqRunDataDir}" | head -9 | sed 's/ //g' | grep -Eo '[1-4]{1}[0-9]{5}'| cut -b 1,2)
 month=$(summary "${nextSeqRunDataDir}" | head -9 | sed 's/ //g' | grep -Eo '[1-4]{1}[0-9]{5}' | cut -b 3,4)
 day=$(summary "${nextSeqRunDataDir}" | head -9 | sed 's/ //g' | grep -Eo '[1-4]{1}[0-9]{5}' | cut -b 5,6)
@@ -45,7 +50,6 @@ echo -e "Sample\tClusterDensity(K/mm2)\tClustersPassingFilter(%)\tPercentage>=Q3
 #deze zouden waarschijnlijk niet eens mee hoeven.
 rsync -rv "${nextSeqRunDataDir}/InterOp" "${ngsDir}/Info/"
 rsync -v "${nextSeqRunDataDir}/RunInfo.xml" "${ngsDir}/Info/"
-rsync -v "${nextSeqRunDataDir}/RunCompletionStatus.xml" "${ngsDir}/Info/"
 rsync -v "${nextSeqRunDataDir}/"*"unParameters.xml" "${ngsDir}/Info/"
 
 if [ ! -d "${workDir}/logs/${filePrefix}/" ]
