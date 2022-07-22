@@ -1,0 +1,5 @@
+queue,localhost
+tmpName,tmp07
+root,/apps/
+nextSeqDir,/groups/umcg-lab/tmp07/sequencers
+nextSeqRunDataDir,${nextSeqDir}/${filePrefix}/

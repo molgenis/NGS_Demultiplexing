@@ -1,4 +1,4 @@
-#MOLGENIS walltime=12:00:00 nodes=1 ppn=6 mem=12gb
+#MOLGENIS walltime=12:00:00 nodes=1 ppn=6 mem=32gb
 #string bcl2fastqVersion
 #string nextSeqRunDataDir
 #string stage
@@ -18,7 +18,7 @@
 
 ${stage} "${bcl2fastqVersion}"
 ${stage} "${ngsUtilsVersion}"
-
+${stage} "${perlPlusVersion}"
 ${checkStage}
 
 #

@@ -6,7 +6,13 @@ set -u
 
 module list
 
-ENVIRONMENT_PARAMETERS="parameters_gattaca.csv"
+if [[ $(hostname) == *"gattaca"* ]]
+then
+	ENVIRONMENT_PARAMETERS="parameters_${gattaca}.csv"
+else
+	ENVIRONMENT_PARAMETERS="parameters_$(hostname).csv"
+fi
+
 RAWDATANAME="${1}"
 WORKDIR="${2}"
 GROUP="${3}"

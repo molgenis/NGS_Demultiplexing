@@ -3,9 +3,10 @@ stage,module load
 checkStage,module list
 
 ### Tool versions ####
-bcl2fastqVersion,bcl2fastq2/v2.17.1.14-foss-2015b
-ngsUtilsVersion,ngs-utils/17.01.1
-interopVersion,interop/1.1.11-foss-2015b
+bcl2fastqVersion,bcl2fastq2/2.20.0-foss-2018b
+ngsUtilsVersion,ngs-utils/22.01.1
+interopVersion,interop/1.1.23-foss-2018b
+perlPlusVersion,PerlPlus/5.30.0-GCCcore-7.3.0-v19.08.1
 
 #### Prefixes ####
 filePrefix,${sequencingStartDate}_${sequencer}_${run}_${flowcell}
