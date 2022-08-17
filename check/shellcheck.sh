@@ -81,7 +81,7 @@ then
 	#
 	# ShellCheck for Jenkins.
 	#
-	shellcheck -a -x -o all -f checkstyle "${WORKSPACE}"/bin/*.sh | tee checkstyle-result.xml
+	shellcheck -a -x -o all -f checkstyle "${WORKSPACE}"/protocols/*.sh | tee checkstyle-result.xml
 	#
 	# Reformat the generated report to add hyperlinks to the ShellCheck issues on the wiki:
 	#	https://github.com/koalaman/shellcheck/wiki/SC${ISSUENUMBER}
@@ -99,6 +99,6 @@ else
 		shellcheck -a -x -o all -f tty bin/*.sh # cannot use the printf construct used below for non-vebose output as it destroys the terminal colors.
 		cd '-' # Goes back to previous directory before we changed to ${MYDIR}.
 	else
-		printf '%s\n' "$(cd "${MYDIR}/.." && shellcheck -a -x -o all -f gcc bin/*.sh)"
+		printf '%s\n' "$(cd "${MYDIR}/.." && shellcheck -a -x -o all -f gcc protocols/*.sh)"
 	fi
 fi
