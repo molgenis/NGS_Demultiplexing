@@ -72,7 +72,7 @@ then
 	-s "${prepKitsDir}"
 else
 	echo "only one barcode detected"
-	"${EBROOTNGS_DEMULTIPLEXING}/CreateIlluminaSampleSheet_V2.pl" \
+	perl "${EBROOTNGS_DEMULTIPLEXING}/CreateIlluminaSampleSheet_V2.pl" \
 	-i "${sampleSheet}" \
 	-o "${tmpIntermediateDir}/Illumina_R${run}.csv" \
 	-r "${run}" \
