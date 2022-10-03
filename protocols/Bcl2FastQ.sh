@@ -17,7 +17,7 @@
 #string seqType
 
 ${stage} "${bcl2fastqVersion}"
-${stage} "${ngsUtilsVersion}"
+${stage} "${perlPlusVersion}"
 
 ${checkStage}
 
@@ -64,7 +64,7 @@ module load "${demultiplexingversion}"
 if [ "${dualBarcode}" == "TRUE" ]
 then
 	echo "dualBarcode modus on"
-	perl "${EBROOTNGS_DEMULTIPLEXING}"/CreateIlluminaSampleSheet_V3.pl \
+	perl "${EBROOTNGS_DEMULTIPLEXING}/CreateIlluminaSampleSheet_V3.pl" \
 	-i "${sampleSheet}" \
 	-o "${tmpIntermediateDir}/Illumina_R${run}.csv" \
 	-r "${run}" \
@@ -72,7 +72,7 @@ then
 	-s "${prepKitsDir}"
 else
 	echo "only one barcode detected"
-	CreateIlluminaSampleSheet_V2.pl \
+	"${EBROOTNGS_DEMULTIPLEXING}/CreateIlluminaSampleSheet_V2.pl" \
 	-i "${sampleSheet}" \
 	-o "${tmpIntermediateDir}/Illumina_R${run}.csv" \
 	-r "${run}" \
