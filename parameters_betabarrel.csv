@@ -1,4 +1,3 @@
-queue,localhost
 tmpName,tmp05
 root,/apps/
 nextSeqDir,/groups/umcg-lab/${tmpName}/sequencers
