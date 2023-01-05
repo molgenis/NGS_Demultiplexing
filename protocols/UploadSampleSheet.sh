@@ -47,7 +47,7 @@ groupNameBool='false'
 for i in "${array[@]}"
 do
 	if [ "${i}" == 'groupName' ]
-        then
+	then
 		groupNameBool='true'
 	fi
 done
