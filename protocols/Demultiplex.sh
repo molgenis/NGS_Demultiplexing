@@ -266,14 +266,14 @@ then
 		mailingList=$(cat ../../../logs/${SCRIPT_NAME}.mailinglist)
 		echo -e "Hallo allen,\ndiscarded percentage (${discarded}%) is higher than 75 procent\nDe demultiplexing pipeline is er dan ook mee gestopt, omdat een te hoog percentage\ndiscarded reads vaak een indicatie is dat er iets mis is met de barcodes oid\n\ngroeten van het GCC" | mail -s "${runPrefix} crashed due to too high percentage of discarded reads" "${mailingList}"
 	fi
-        exit 1
+	exit 1
 elif [[ "${rejectedReads}" == "true" ]]
 then
 	if [[ -r ../../../logs/${SCRIPT_NAME}.mailinglist ]]
-        then
-                mailingList=$(cat ../../../logs/${SCRIPT_NAME}.mailinglist)
+	then
+		mailingList=$(cat ../../../logs/${SCRIPT_NAME}.mailinglist)
 
-                echo -e "Hallo allen,\n\nDe volgende barcodes zijn afgekeurd op basis van een te laag percentage reads per barcode):\n" > mailText.txt
+		echo -e "Hallo allen,\n\nDe volgende barcodes zijn afgekeurd op basis van een te laag percentage reads per barcode):\n" > mailText.txt
 
 		for i in ${runPrefix}*_1.fq.gz.rejected
 		do
@@ -299,9 +299,9 @@ then
 		cat mailText.txt
 		cat mailText.txt | mail -s "er zijn samples afgekeurd van run: ${runPrefix}" "${mailingList}"
 
-        fi
+	fi
 else
-        echo "number of discarded reads is ${discarded}"
+	echo "number of discarded reads is ${discarded}"
 fi
 
 

@@ -29,7 +29,7 @@ then
 	mkdir -p "${runResultsDir}"
 	echo "mkdir ${runResultsDir}"
 fi
-#Make an intermediate and resultsDir 
+#Make an intermediate and resultsDir
 if [ ! -d "${intermediateDir}" ]
 then
 	mkdir -p "${intermediateDir}"
@@ -42,7 +42,7 @@ fi
 
 if [ -d "${intermediateDir}/Stats" ]
 then
-        rm -rf "${intermediateDir}/Stats"
+	rm -rf "${intermediateDir}/Stats"
 fi
 
 if [ ! -d "${ngsDir}" ]
