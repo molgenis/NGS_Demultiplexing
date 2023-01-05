@@ -49,13 +49,13 @@ do
 	if [ "${i}" == 'groupName' ]
         then
 		groupNameBool='true'
-        fi
+	fi
 done
 if [ "${groupNameBool}" == 'false' ]
 then
 	externalSampleID=$(head -1 "${MCsampleSheet}"  | awk 'BEGIN {FS=","}{for (i==1 ; i <=NF; i++){ if ($i=="externalSampleID"){printf i}}}')
-        project=$(head -1 "${MCsampleSheet}"  | awk 'BEGIN {FS=","}{for (i==1 ; i <=NF; i++){ if ($i=="project"){printf i}}}')
-        lane=$(head -1 "${MCsampleSheet}"  | awk 'BEGIN {FS=","}{for (i==1 ; i <=NF; i++){ if($i=="lane"){printf i}}}')
+	project=$(head -1 "${MCsampleSheet}"  | awk 'BEGIN {FS=","}{for (i==1 ; i <=NF; i++){ if ($i=="project"){printf i}}}')
+	lane=$(head -1 "${MCsampleSheet}"  | awk 'BEGIN {FS=","}{for (i==1 ; i <=NF; i++){ if($i=="lane"){printf i}}}')
 
 	awk -v ext="${externalSampleID}" 'BEGIN{FS=","}{print $ext}' "${MCsampleSheet}" | awk 'BEGIN{FS="_"}{if (NR==1){print "famnr,umcgnr,dnanr,onderzoeknr,archiveLocation"} else {print $1","$2","$3","$4",prm03"}}' > "${MCsampleSheet}.splittedExtID"
 	awk -v var="${group}" -v ext="${externalSampleID}" -v pro="$project" -v la="$lane" 'BEGIN{FS=","}{if (NR==1){print $0",groupName,uniqueID"}else{print $0","var","$ext"_"$pro"_"$la}}' "${MCsampleSheet}" > "${MCsampleSheet}.add"
