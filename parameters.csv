@@ -19,15 +19,15 @@ ngsDir,${rawDataDir}/ngs/${filePrefix}/
 arrayDir,${rawDataDir}/array 
 
 runID,run_${run}
-generatedScriptsDir,${workDir}/generatedscripts/${filePrefix}/
-runDir,${workDir}/runs/${filePrefix}/
+generatedScriptsDir,${workDir}/generatedscripts/NGS_Demultiplexing/${filePrefix}/
+runDir,${workDir}/runs/NGS_Demultiplexing/${filePrefix}/
 runJobsDir,${runDir}/jobs/
 runResultsDir,${runDir}/results/
 prepKitsDir,${dataDir}/Prepkits/
-intermediateDir,${workDir}/tmp/${filePrefix}/
+intermediateDir,${workDir}/tmp/NGS_Demultiplexing/${filePrefix}/
 
 bcl2fastqDir,${nextSeqRunDataDir}/${project}
-sampleSheet,${workDir}/generatedscripts/${filePrefix}/${filePrefix}.csv
+sampleSheet,${workDir}/generatedscripts/NGS_Demultiplexing/${filePrefix}/${filePrefix}.csv
 MCsampleSheet,${intermediateDir}/status_samples.csv
 
 sourcesDir,${root}/sources/
@@ -63,7 +63,6 @@ demultiplexedDiscardedFastqFilenameSR,${runPrefix}_${filenameSuffixDiscardedRead
 demultiplexedDiscardedFastqFilenamePE1,${runPrefix}_${filenameSuffixDiscardedReads}_${filenameSuffixPE1}${fastqExtension}
 demultiplexedDiscardedFastqFilenamePE2,${runPrefix}_${filenameSuffixDiscardedReads}_${filenameSuffixPE2}${fastqExtension}
 
-
 compressedDemultiplexedSampleFastqFilenameSR,${demultiplexedSampleFastqFilenameSR}${gzipExtension}
 compressedDemultiplexedSampleFastqFilenamePE1,${demultiplexedSampleFastqFilenamePE1}${gzipExtension}
 compressedDemultiplexedSampleFastqFilenamePE2,${demultiplexedSampleFastqFilenamePE2}${gzipExtension}
@@ -71,7 +70,6 @@ compressedDemultiplexedSampleFastqFilenamePE2,${demultiplexedSampleFastqFilename
 compressedDemultiplexedDiscardedFastqFilenameSR,${demultiplexedDiscardedFastqFilenameSR}${gzipExtension}
 compressedDemultiplexedDiscardedFastqFilenamePE1,${demultiplexedDiscardedFastqFilenamePE1}${gzipExtension}
 compressedDemultiplexedDiscardedFastqFilenamePE2,${demultiplexedDiscardedFastqFilenamePE2}${gzipExtension}
-
 
 demultiplexedSampleFastqChecksumFilenameSR,${demultiplexedSampleFastqFilenameSR}${md5sumExtension}
 demultiplexedSampleFastqChecksumFilenamePE1,${demultiplexedSampleFastqFilenamePE1}${md5sumExtension}

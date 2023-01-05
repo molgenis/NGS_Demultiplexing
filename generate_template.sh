@@ -1,12 +1,14 @@
 #!/bin/bash
-set -e 
-set -u
+set -eu
 
 ##external call with 3 arguments (rawdataName, group and workDir)
 
 module list
 
-ENVIRONMENT_PARAMETERS="parameters_gattaca.csv"
+host=$(hostname -s)
+
+
+ENVIRONMENT_PARAMETERS="parameters_${host}.csv"
 RAWDATANAME="${1}"
 WORKDIR="${2}"
 GROUP="${3}"
@@ -14,23 +16,15 @@ WORKFLOW="${EBROOTNGS_DEMULTIPLEXING}/workflow.csv"
 echo "$WORKDIR AND $RAWDATANAME"
 echo "GROUPIE: $GROUP"
 
-if [ -f ".compute.properties" ];
-then
-     rm ".compute.properties"
-fi
-
-mkdir -p "${WORKDIR}/generatedscripts/${RAWDATANAME}/"
+mkdir -p "${WORKDIR}/generatedscripts/NGS_Demultiplexing/${RAWDATANAME}/"
 mkdir -p "${WORKDIR}/rawdata/ngs/${RAWDATANAME}/"
 
-if [ -f "${WORKDIR}/generatedscripts/${RAWDATANAME}/out.csv"  ];
-then
-	rm -rf "${WORKDIR}/generatedscripts/${RAWDATANAME}/out.csv"
-fi
+rm -rf "${WORKDIR}/generatedscripts/NGS_Demultiplexing/${RAWDATANAME}/out.csv"
 
 #
 ###### Dual barcode checker
 #
-sampsheet="${WORKDIR}/generatedscripts/${RAWDATANAME}/${RAWDATANAME}.csv"
+sampsheet="${WORKDIR}/generatedscripts/NGS_Demultiplexing/${RAWDATANAME}/${RAWDATANAME}.csv"
 
 mac2unix "${sampsheet}"
 
@@ -59,21 +53,21 @@ fi
 
 ## Will return or nothing or in case there is a dualbarcode it will create a file
 perl "${EBROOTNGS_DEMULTIPLEXING}/convertParametersGitToMolgenis.pl" "${EBROOTNGS_DEMULTIPLEXING}/parameters.csv" > \
-"${WORKDIR}/generatedscripts/${RAWDATANAME}/out.csv"
+"${WORKDIR}/generatedscripts/NGS_Demultiplexing/${RAWDATANAME}/out.csv"
 
 perl "${EBROOTNGS_DEMULTIPLEXING}/convertParametersGitToMolgenis.pl" "${EBROOTNGS_DEMULTIPLEXING}/${ENVIRONMENT_PARAMETERS}" > \
-"${WORKDIR}/generatedscripts/${RAWDATANAME}/environment_parameters.csv"
+"${WORKDIR}/generatedscripts/NGS_Demultiplexing/${RAWDATANAME}/environment_parameters.csv"
 
 perl "${EBROOTNGS_DEMULTIPLEXING}/convertParametersGitToMolgenis.pl" "${EBROOTNGS_DEMULTIPLEXING}/parameters_${GROUP}.csv" > \
-"${WORKDIR}/generatedscripts/${RAWDATANAME}/parameters_group.csv"
+"${WORKDIR}/generatedscripts/NGS_Demultiplexing/${RAWDATANAME}/parameters_group.csv"
 
 bash "${EBROOTMOLGENISMINCOMPUTE}/molgenis_compute.sh" \
--p "${WORKDIR}/generatedscripts/${RAWDATANAME}/out.csv" \
--p "${WORKDIR}/generatedscripts/${RAWDATANAME}/parameters_group.csv" \
--p "${WORKDIR}/generatedscripts/${RAWDATANAME}/environment_parameters.csv" \
--p "${WORKDIR}/generatedscripts/${RAWDATANAME}/${RAWDATANAME}.csv" \
+-p "${WORKDIR}/generatedscripts/NGS_Demultiplexing/${RAWDATANAME}/out.csv" \
+-p "${WORKDIR}/generatedscripts/NGS_Demultiplexing/${RAWDATANAME}/parameters_group.csv" \
+-p "${WORKDIR}/generatedscripts/NGS_Demultiplexing/${RAWDATANAME}/environment_parameters.csv" \
+-p "${WORKDIR}/generatedscripts/NGS_Demultiplexing/${RAWDATANAME}/${RAWDATANAME}.csv" \
 -w "${WORKFLOW}" \
--rundir "${WORKDIR}/runs/${RAWDATANAME}/jobs" \
+-rundir "${WORKDIR}/runs/NGS_Demultiplexing/${RAWDATANAME}/jobs" \
 -o "dualBarcode=${dualBarcode};\
 demultiplexingversion=$(module list | grep -o -P 'NGS_Demultiplexing(.+)')" \
 -b slurm \
