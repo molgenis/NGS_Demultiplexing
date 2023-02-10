@@ -10,7 +10,7 @@
 #string runJobsDir
 #string ngsDir
 #string prepKitsDir
-#string ngsUtilsVersion
+#string perlPlusVersion
 #string dualBarcode
 #string runResultsDir
 #string barcodeType
@@ -24,31 +24,13 @@ ${checkStage}
 #
 # Initialize script specific vars.
 #
-if [ ! -d "${runResultsDir}" ]
-then
-	mkdir -p "${runResultsDir}"
-	echo "mkdir ${runResultsDir}"
-fi
-#Make an intermediate and resultsDir
-if [ ! -d "${intermediateDir}" ]
-then
-	mkdir -p "${intermediateDir}"
-fi
+mkdir -vp "${runResultsDir}"
+mkdir -vp "${intermediateDir}"
 
-if [ -d "${intermediateDir}/Reports" ]
-then
-	rm -rf "${intermediateDir}/Reports"
-fi
+rm -rf "${intermediateDir}/Reports"
+rm -rf "${intermediateDir}/Stats"
 
-if [ -d "${intermediateDir}/Stats" ]
-then
-	rm -rf "${intermediateDir}/Stats"
-fi
-
-if [ ! -d "${ngsDir}" ]
-then
-	mkdir -p "${ngsDir}"
-fi
+mkdir -vp "${ngsDir}"
 
 cp "${sampleSheet}" "${runJobsDir}"
 
@@ -61,9 +43,9 @@ echo "tmpIntermediateDir: ${tmpIntermediateDir}"
 
 module load "${demultiplexingversion}"
 
-if [ "${dualBarcode}" == "TRUE" ]
+if [[ "${dualBarcode}" == 'TRUE' ]]
 then
-	echo "dualBarcode modus on"
+	echo 'dualBarcode modus on'
 	perl "${EBROOTNGS_DEMULTIPLEXING}/CreateIlluminaSampleSheet_V3.pl" \
 	-i "${sampleSheet}" \
 	-o "${tmpIntermediateDir}/Illumina_R${run}.csv" \
@@ -71,7 +53,7 @@ then
 	-d TRUE \
 	-s "${prepKitsDir}"
 else
-	echo "only one barcode detected"
+	echo 'only one barcode detected'
 	perl "${EBROOTNGS_DEMULTIPLEXING}/CreateIlluminaSampleSheet_V2.pl" \
 	-i "${sampleSheet}" \
 	-o "${tmpIntermediateDir}/Illumina_R${run}.csv" \
