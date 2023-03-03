@@ -3,7 +3,7 @@ stage,module load
 checkStage,module list
 
 ### Tool versions ####
-bcl2fastqVersion,bcl2fastq2/2.20.0-foss-2022a
+bcl2fastqVersion,bcl2fastq2/2.20.0-GCC-11.3.0
 perlPlusVersion,PerlPlus/5.34.1-GCCcore-11.3.0-v22.11.1
 interopVersion,interop/1.2.0-foss-2022a
 
