@@ -16,6 +16,8 @@
 #string barcodeType
 #string seqType
 
+ml purge
+${stage} "${demultiplexingversion}"
 ${stage} "${bcl2fastqVersion}"
 ${stage} "${perlPlusVersion}"
 
@@ -41,7 +43,7 @@ tmpIntermediateDir="${MC_tmpFile}"
 
 echo "tmpIntermediateDir: ${tmpIntermediateDir}"
 
-module load "${demultiplexingversion}"
+
 
 if [[ "${dualBarcode}" == 'TRUE' ]]
 then

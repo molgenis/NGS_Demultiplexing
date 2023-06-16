@@ -19,7 +19,7 @@ arrayDir,${rawDataDir}/array
 runID,run_${run}
 generatedScriptsDir,${workDir}/generatedscripts/NGS_Demultiplexing/${filePrefix}/
 runDir,${workDir}/runs/NGS_Demultiplexing/${filePrefix}/
-runJobsDir,${runDir}/jobs/## CreateFinalReport
+runJobsDir,${runDir}/jobs/
 runResultsDir,${runDir}/results/
 prepKitsDir,${dataDir}/Prepkits/
 intermediateDir,${workDir}/tmp/NGS_Demultiplexing/${filePrefix}/

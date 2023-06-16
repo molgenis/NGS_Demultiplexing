@@ -59,7 +59,7 @@ csv(){
 _count_reads() {
 	local    _fastq=$1
 	local    _barcode=$2
-	local -i _lines=$(gzip -cd "${_fastq}" | wc -l)
+	local -i _lines=$(zcat "${_fastq}" | wc -l)
 	local -i _reads=$((_lines/4))
 	if [ ${#_reads} -gt "${longest_read_count_length}" ]; then
 		longest_read_count_length=${#_reads}
@@ -136,6 +136,7 @@ then
 		#
 		declare barcodeD="${filenameSuffixDiscardedReads}"
 		declare fastq="${ngsDir}/${compressedDemultiplexedDiscardedFastqFilenameSR}"
+		echo "counting lines for ${ngsDir}/${compressedDemultiplexedDiscardedFastqFilenameSR}"
 		declare -i reads=-1
 		_count_reads "${fastq}" "${barcodeD}" 'reads'
 		read_counts=(${read_counts[@]-} ${barcodeD}:${reads})
@@ -144,7 +145,9 @@ then
 		((n_elements=${#compressedDemultiplexedSampleFastqFilenameSR[@]}, max_index=n_elements - 1))
 		for ((fileToCheck = 0; fileToCheck <= max_index; fileToCheck++))
 		do
+
 			barcodeR=${barcode[fileToCheck]}
+			echo "processing ${barcodeR}"
 			fastq=${ngsDir}/${compressedDemultiplexedSampleFastqFilenameSR[fileToCheck]}
 			declare -i reads=-1
 			_count_reads ${fastq} ${barcodeR} 'reads'
@@ -192,9 +195,12 @@ then
 		declare fastq_2="${ngsDir}/${compressedDemultiplexedDiscardedFastqFilenamePE2}"
 		declare -i reads_1=-1
 		declare -i reads_2=-2
+		echo "counting lines in ${fastq_1}"
 		_count_reads "${fastq_1}" "${barcodeD}" 'reads_1'
+		echo "counting lines in ${fastq_2}"
 		_count_reads "${fastq_2}" "${barcodeD}" 'reads_2'
-		if (( "${reads_1}" != "${reads_2}" )); then
+		if [[ "${reads_1}" != "${reads_2}" ]]
+		then
 			touch "${fluxDir}/${label}_${barcodeD}.read_count_check_for_pairs.FAILED"
 			echo "FATAL: Number of reads in both ${label}_${barcode} FastQ files not the same!"
 			exit 1
@@ -205,20 +211,22 @@ then
 		((n_elements=${#compressedDemultiplexedSampleFastqFilenamePE1[@]}, max_index=n_elements - 1))
 		for ((fileToCheck = 0; fileToCheck <= max_index; fileToCheck++))
 		do
-		barcodeR="${barcode[fileToCheck]}"
-		fastq_1=${ngsDir}/${compressedDemultiplexedSampleFastqFilenamePE1[fileToCheck]}
-		fastq_2=${ngsDir}/${compressedDemultiplexedSampleFastqFilenamePE2[fileToCheck]}
-		reads_1=-1
-		reads_2=-2
-		_count_reads "${fastq_1}" "${barcodeR}" 'reads_1'
-		_count_reads "${fastq_2}" "${barcodeR}" 'reads_2'
-		if (( "${reads_1}" != "${reads_2}" )); then
-			touch "${fluxDir}/${label}_${barcodeR}.read_count_check_for_pairs.FAILED"
-			echo "FATAL: Number of reads in both ${label}_${barcode} FastQ files not the same!"
-			exit 1
-		fi
-		read_pair_counts=(${read_pair_counts[@]-} ${barcodeR}:${reads_1})
-		((total_read_pairs+=reads_1))
+
+			barcodeR="${barcode[fileToCheck]}"
+			fastq_1=${ngsDir}/${compressedDemultiplexedSampleFastqFilenamePE1[fileToCheck]}
+			fastq_2=${ngsDir}/${compressedDemultiplexedSampleFastqFilenamePE2[fileToCheck]}
+			reads_1=-1
+			reads_2=-2
+			_count_reads "${fastq_1}" "${barcodeR}" 'reads_1'
+			_count_reads "${fastq_2}" "${barcodeR}" 'reads_2'
+			if [[ "${reads_1}" != "${reads_2}" ]]
+			then
+				touch "${fluxDir}/${label}_${barcodeR}.read_count_check_for_pairs.FAILED"
+				echo "FATAL: Number of reads in both ${label}_${barcode} FastQ files not the same!"
+				exit 1
+			fi
+			read_pair_counts=(${read_pair_counts[@]-} ${barcodeR}:${reads_1})
+			((total_read_pairs+=reads_1))
 
 		done
 
