@@ -146,11 +146,11 @@ then
 		for ((fileToCheck = 0; fileToCheck <= max_index; fileToCheck++))
 		do
 
-			barcodeR=${barcode[fileToCheck]}
+			barcodeR="${barcode[fileToCheck]}"
 			echo "processing ${barcodeR}"
-			fastq=${ngsDir}/${compressedDemultiplexedSampleFastqFilenameSR[fileToCheck]}
+			fastq="${ngsDir}/${compressedDemultiplexedSampleFastqFilenameSR[fileToCheck]}"
 			declare -i reads=-1
-			_count_reads ${fastq} ${barcodeR} 'reads'
+			_count_reads "${fastq}" "${barcodeR}" 'reads'
 			read_counts=(${read_counts[@]-} ${barcodeR}:${reads})
 			((total_reads+=reads))
 		done
@@ -213,8 +213,8 @@ then
 		do
 
 			barcodeR="${barcode[fileToCheck]}"
-			fastq_1=${ngsDir}/${compressedDemultiplexedSampleFastqFilenamePE1[fileToCheck]}
-			fastq_2=${ngsDir}/${compressedDemultiplexedSampleFastqFilenamePE2[fileToCheck]}
+			fastq_1="${ngsDir}/${compressedDemultiplexedSampleFastqFilenamePE1[fileToCheck]}"
+			fastq_2="${ngsDir}/${compressedDemultiplexedSampleFastqFilenamePE2[fileToCheck]}"
 			reads_1=-1
 			reads_2=-2
 			_count_reads "${fastq_1}" "${barcodeR}" 'reads_1'
