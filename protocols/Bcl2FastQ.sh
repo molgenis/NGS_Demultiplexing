@@ -1,4 +1,4 @@
-#MOLGENIS walltime=12:00:00 nodes=1 ppn=6 mem=12gb
+#MOLGENIS walltime=12:00:00 nodes=1 ppn=6 mem=20gb
 #string bcl2fastqVersion
 #string nextSeqRunDataDir
 #string stage
@@ -16,6 +16,8 @@
 #string barcodeType
 #string seqType
 
+ml purge
+${stage} "${demultiplexingversion}"
 ${stage} "${bcl2fastqVersion}"
 ${stage} "${perlPlusVersion}"
 
@@ -41,12 +43,12 @@ tmpIntermediateDir="${MC_tmpFile}"
 
 echo "tmpIntermediateDir: ${tmpIntermediateDir}"
 
-module load "${demultiplexingversion}"
+
 
 if [[ "${dualBarcode}" == 'TRUE' ]]
 then
 	echo 'dualBarcode modus on'
-	perl "${EBROOTNGS_DEMULTIPLEXING}/CreateIlluminaSampleSheet_V3.pl" \
+	perl "${EBROOTNGS_DEMULTIPLEXING}/scripts/CreateIlluminaSampleSheet_V3.pl" \
 	-i "${sampleSheet}" \
 	-o "${tmpIntermediateDir}/Illumina_R${run}.csv" \
 	-r "${run}" \
@@ -54,7 +56,7 @@ then
 	-s "${prepKitsDir}"
 else
 	echo 'only one barcode detected'
-	perl "${EBROOTNGS_DEMULTIPLEXING}/CreateIlluminaSampleSheet_V2.pl" \
+	perl "${EBROOTNGS_DEMULTIPLEXING}/scripts/CreateIlluminaSampleSheet_V2.pl" \
 	-i "${sampleSheet}" \
 	-o "${tmpIntermediateDir}/Illumina_R${run}.csv" \
 	-r "${run}" \

@@ -50,13 +50,13 @@ if [[ -n "${_sampleSheetColumnOffsets["barcode"]+isset}" ]]; then
 fi
 
 ## Will return or nothing or in case there is a dualbarcode it will create a file
-perl "${EBROOTNGS_DEMULTIPLEXING}/convertParametersGitToMolgenis.pl" "${EBROOTNGS_DEMULTIPLEXING}/parameters.csv" > \
+perl "${EBROOTNGS_DEMULTIPLEXING}/scripts/convertParametersGitToMolgenis.pl" "${EBROOTNGS_DEMULTIPLEXING}/parameters.csv" > \
 "${WORKDIR}/generatedscripts/NGS_Demultiplexing/${RAWDATANAME}/out.csv"
 
-perl "${EBROOTNGS_DEMULTIPLEXING}/convertParametersGitToMolgenis.pl" "${EBROOTNGS_DEMULTIPLEXING}/${ENVIRONMENT_PARAMETERS}" > \
+perl "${EBROOTNGS_DEMULTIPLEXING}/scripts/convertParametersGitToMolgenis.pl" "${EBROOTNGS_DEMULTIPLEXING}/${ENVIRONMENT_PARAMETERS}" > \
 "${WORKDIR}/generatedscripts/NGS_Demultiplexing/${RAWDATANAME}/environment_parameters.csv"
 
-perl "${EBROOTNGS_DEMULTIPLEXING}/convertParametersGitToMolgenis.pl" "${EBROOTNGS_DEMULTIPLEXING}/parameters_${GROUP}.csv" > \
+perl "${EBROOTNGS_DEMULTIPLEXING}/scripts/convertParametersGitToMolgenis.pl" "${EBROOTNGS_DEMULTIPLEXING}/parameters_${GROUP}.csv" > \
 "${WORKDIR}/generatedscripts/NGS_Demultiplexing/${RAWDATANAME}/parameters_group.csv"
 
 bash "${EBROOTMOLGENISMINCOMPUTE}/molgenis_compute.sh" \
