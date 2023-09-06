@@ -23,8 +23,11 @@ rm -rf "${WORKDIR}/generatedscripts/NGS_Demultiplexing/${RAWDATANAME}/out.csv"
 ###### Dual barcode checker
 #
 sampsheet="${WORKDIR}/generatedscripts/NGS_Demultiplexing/${RAWDATANAME}/${RAWDATANAME}.csv"
-
-mac2unix "${sampsheet}"
+SAMPLESHEET_SEP=","
+cp "${sampsheet}"{,.converted} 
+sed -i 's/\r/\n/g' "${sampsheet}.converted" 
+sed -i "/^[\s${SAMPLESHEET_SEP}]*$/d" "${sampsheet}.converted"
+mv "${sampsheet}.converted" "${sampsheet}"
 
 declare -a _sampleSheetColumnNames=()
 declare -A _sampleSheetColumnOffsets=()
