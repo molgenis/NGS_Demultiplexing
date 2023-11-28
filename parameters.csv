@@ -18,6 +18,7 @@ ngsDir,${rawDataDir}/ngs/${filePrefix}/
 arrayDir,${rawDataDir}/array 
 runID,run_${run}
 generatedScriptsDir,${workDir}/generatedscripts/NGS_Demultiplexing/${filePrefix}/
+logsDir,${workDir}/logs/
 runDir,${workDir}/runs/NGS_Demultiplexing/${filePrefix}/
 runJobsDir,${runDir}/jobs/
 runResultsDir,${runDir}/results/

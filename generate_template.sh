@@ -16,6 +16,7 @@ echo "GROUPIE: $GROUP"
 
 mkdir -p "${WORKDIR}/generatedscripts/NGS_Demultiplexing/${RAWDATANAME}/"
 mkdir -p "${WORKDIR}/rawdata/ngs/${RAWDATANAME}/"
+mkdir -p "${WORKDIR}/logs/${RAWDATANAME}/"
 
 rm -rf "${WORKDIR}/generatedscripts/NGS_Demultiplexing/${RAWDATANAME}/out.csv"
 

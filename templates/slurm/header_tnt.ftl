@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=${project}_${taskId}
+#SBATCH --job-name=${filePrefix}_${taskId}
 #SBATCH --output=${taskId}.out
 #SBATCH --error=${taskId}.err
 #SBATCH --time=${walltime}
@@ -30,13 +30,13 @@ declare MC_jobScript="${taskId}.sh"
 declare MC_jobScriptSTDERR="${taskId}.err"
 declare MC_jobScriptSTDOUT="${taskId}.out"
 declare MC_jobName="${taskId}"
-declare MC_project="${project}"
+declare MC_project="${filePrefix}"
 
 #
 # File to indicate failure of a complete workflow in
 # a central location for log files for all projects.
 #
-logsDirectory="${logsDir}/${project}/"
+logsDirectory="${logsDir}/${filePrefix}/"
 mydate_start=$(date +"%Y-%m-%dT%H:%M:%S+0200")
 export mydate_start
 #
@@ -48,7 +48,7 @@ export mydate_start
 #
 <#noparse>
 runName=$(basename $(cd ../ && pwd ))
-MC_failedFile="${logsDirectory}/${runName}.pipeline.failed"
+MC_failedFile="${logsDirectory}/${runName}.demultiplexing.failed"
 
 
 declare MC_singleSeperatorLine=$(head -c 120 /dev/zero | tr '\0' '-')
