@@ -8,6 +8,7 @@
 #list barcodeType
 #string lane
 #string filePrefix
+#string	logsDir
 
 OLDDIR=$(pwd)
 

@@ -15,6 +15,8 @@
 #string runResultsDir
 #string barcodeType
 #string seqType
+#string logsDir
+#string filePrefix
 
 ml purge
 ${stage} "${demultiplexingversion}"
