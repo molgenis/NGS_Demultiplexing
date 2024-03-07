@@ -9,6 +9,7 @@
 #string intermediateDir
 #string generatedScriptsDir
 #string nextSeqRunDataDir
+#string	logsDir
 
 WHOAMI=$(whoami)
 # shellcheck source=/home/${WHOAMI}/molgenis.cfg
@@ -105,10 +106,10 @@ cd "${runResultsDir}" || exit
 while IFS='\n' read -r line; do resultsArray+=("$line"); done < <(find "${ngsDir}/"*.*)
 for i in "${resultsArray[@]}"
 do
-	ln -s "${i}" 
+	ln -sf "${i}" 
 done
 
 cd - || exit
 
 echo "made symlinks from the rawdata/ngs folder to the results folder: ${runResultsDir}"
-echo "finished: $(date +%FT%T%z)" >> "${workDir}/logs/${filePrefix}//run01.demultiplexing.totalRuntime"
+echo "finished: $(date +%FT%T%z)" >> "${workDir}/logs/${filePrefix}//${filePrefix}.demultiplexing.totalRuntime"
