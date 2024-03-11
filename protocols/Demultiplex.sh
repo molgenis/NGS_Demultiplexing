@@ -270,8 +270,8 @@ discarded=$(fgrep "DISCARDED" ${runPrefix}.demultiplex.log | awk -F '[()]' '{pri
 if [[ "${discarded}" -gt 75 ]]
 then
 	echo "discarded percentage (${discarded}%) is higher than 75 procent, exiting"
-	echo -e "Dear Helpdesk ,\ndiscarded percentage (${discarded}%) is higher than 75 procent. See ${ngsDir}/${runPrefix}.demultiplex.log for a complete overview of all barcodes.\nThe demultiplexing pipeline has quit for sequence run ${runPrefix}, please check if the correct barcodes are enterd in the samplesheet\nkind regards GCC" >> "${logsDir}/${filePrefix}/${filePrefix}.demultiplexing.discarded"
-	cat ${runPrefix}.demultiplex.log >> "${logsDir}/${filePrefix}/${filePrefix}.demultiplexing.discarded"
+	echo -e "Dear Helpdesk ,\ndiscarded percentage (${discarded}%) is higher than 75 procent. See ${ngsDir}/${runPrefix}.demultiplex.log for a complete overview of all barcodes.\nThe demultiplexing pipeline has quit for sequence run ${runPrefix}, please check if the correct barcodes are enterd in the samplesheet\nkind regards GCC" >> "${logsDir}/${filePrefix}/run01.demultiplexing.discarded"
+	cat ${runPrefix}.demultiplex.log >> "${logsDir}/${filePrefix}/run01.demultiplexing.discarded"
 
 	if [[ -r ../../../logs/${SCRIPT_NAME}.mailinglist ]]
 	then
@@ -310,12 +310,12 @@ then
 		echo -e "\nAlle lanen voor deze barcode(s) worden niet door de pipeline gehaald.\n\ngroeten,\nGCC" >> mailText.txt 
 		cat mailText.txt
 		cat mailText.txt | mail -s "er zijn samples afgekeurd van run: ${runPrefix}" "${mailingList}"
-		cat mailText.txt >> "${logsDir}/${filePrefix}/${filePrefix}.demultiplexing.discarded"
+		cat mailText.txt >> "${logsDir}/${filePrefix}/run01.demultiplexing.discarded"
 
 	fi
 else
 	echo "number of discarded reads is ${discarded}"
-	cat ${runPrefix}.demultiplex.log >> "${logsDir}/${filePrefix}/${filePrefix}.demultiplexing.finished"
+	cat ${runPrefix}.demultiplex.log >> "${logsDir}/${filePrefix}/run01.demultiplexing.finished"
 fi
 
 

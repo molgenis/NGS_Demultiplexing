@@ -69,7 +69,7 @@ then
 fi
 
 
-if [ ! -f "${workDir}/logs/${filePrefix}/${filePrefix}.${SCRIPT_NAME}.finished" ]
+if [ ! -f "${workDir}/logs/${filePrefix}/run01.${SCRIPT_NAME}.finished" ]
 then
 	if curl -s -f -H "Content-Type: application/json" -X POST -d "{"username"="${USERNAME}", "password"="${PASSWORD}"}" https://${MOLGENISSERVER}/api/v1/login
 	then
@@ -81,7 +81,7 @@ then
 		echo "curl couldn't connect to host, skipped the uploading of the samplesheet to ${MOLGENISSERVER}" > "${ngsDir}/${filePrefix}.csv.uploadingFailed"
 
 	fi
-	touch "${workDir}/logs/${filePrefix}/${filePrefix}.${SCRIPT_NAME}.finished"
+	touch "${workDir}/logs/${filePrefix}/run01.${SCRIPT_NAME}.finished"
 else
 	echo "samplesheet already uploaded to ${MOLGENISSERVER}"
 
@@ -95,11 +95,11 @@ then
 	rm "${ngsDir}/rejectedBarcodes.txt"
 fi
 
-if [ -f "${workDir}/logs/${filePrefix}/${filePrefix}.demultiplexing.started" ]
+if [ -f "${workDir}/logs/${filePrefix}/run01.demultiplexing.started" ]
 then
-	mv "${workDir}/logs/${filePrefix}/${filePrefix}.demultiplexing."{started,finished}
+	mv "${workDir}/logs/${filePrefix}/run01.demultiplexing."{started,finished}
 else
-	touch "${workDir}/logs/${filePrefix}/${filePrefix}.demultiplexing.finished"
+	touch "${workDir}/logs/${filePrefix}/run01.demultiplexing.finished"
 fi
 cd "${runResultsDir}" || exit
 
@@ -112,4 +112,4 @@ done
 cd - || exit
 
 echo "made symlinks from the rawdata/ngs folder to the results folder: ${runResultsDir}"
-echo "finished: $(date +%FT%T%z)" >> "${workDir}/logs/${filePrefix}//${filePrefix}.demultiplexing.totalRuntime"
+echo "finished: $(date +%FT%T%z)" >> "${workDir}/logs/${filePrefix}//run01.demultiplexing.totalRuntime"

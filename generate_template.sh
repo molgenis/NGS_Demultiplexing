@@ -24,6 +24,7 @@ rm -rf "${WORKDIR}/generatedscripts/NGS_Demultiplexing/${RAWDATANAME}/out.csv"
 ###### Dual barcode checker
 #
 sampsheet="${WORKDIR}/generatedscripts/NGS_Demultiplexing/${RAWDATANAME}/${RAWDATANAME}.csv"
+
 SAMPLESHEET_SEP=","
 cp "${sampsheet}"{,.converted} 
 sed -i 's/\r/\n/g' "${sampsheet}.converted" 
