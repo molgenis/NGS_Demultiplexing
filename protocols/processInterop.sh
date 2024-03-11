@@ -59,8 +59,6 @@ then
 fi
 
 
-touch "${workDir}/logs/${filePrefix}/${filePrefix}.demultiplexing.started"
-
 
 #################Dit stuk later aanpassen, naar hoe de diagnostiek het wil. Dit werkt ook nog niet, kan niet met komma getallen overweg.##################
 #if [ "${Q30}" -lt 100 ]

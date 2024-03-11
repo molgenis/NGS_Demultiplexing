@@ -48,7 +48,7 @@ export mydate_start
 #
 <#noparse>
 runName=$(basename $(cd ../ && pwd ))
-MC_failedFile="${logsDirectory}/${runName}.demultiplexing.failed"
+MC_failedFile="${logsDirectory}/run01.demultiplexing.failed"
 
 
 declare MC_singleSeperatorLine=$(head -c 120 /dev/zero | tr '\0' '-')
