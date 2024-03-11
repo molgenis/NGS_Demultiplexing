@@ -16,6 +16,7 @@ echo "GROUPIE: $GROUP"
 
 mkdir -p "${WORKDIR}/generatedscripts/NGS_Demultiplexing/${RAWDATANAME}/"
 mkdir -p "${WORKDIR}/rawdata/ngs/${RAWDATANAME}/"
+mkdir -p "${WORKDIR}/logs/${RAWDATANAME}/"
 
 rm -rf "${WORKDIR}/generatedscripts/NGS_Demultiplexing/${RAWDATANAME}/out.csv"
 
@@ -69,6 +70,8 @@ bash "${EBROOTMOLGENISMINCOMPUTE}/molgenis_compute.sh" \
 -p "${WORKDIR}/generatedscripts/NGS_Demultiplexing/${RAWDATANAME}/${RAWDATANAME}.csv" \
 -w "${WORKFLOW}" \
 -rundir "${WORKDIR}/runs/NGS_Demultiplexing/${RAWDATANAME}/jobs" \
+--header "${EBROOTNGS_DEMULTIPLEXING}/templates/slurm/header_tnt.ftl" \
+--footer "${EBROOTNGS_DEMULTIPLEXING}/templates/slurm/footer_tnt.ftl" \
 -o "dualBarcode=${dualBarcode};\
 demultiplexingversion=$(module list | grep -o -P 'NGS_Demultiplexing(.+)')" \
 -b slurm \

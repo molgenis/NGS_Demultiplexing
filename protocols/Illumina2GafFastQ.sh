@@ -8,6 +8,7 @@
 #list barcodeType
 #string lane
 #string filePrefix
+#string	logsDir
 
 OLDDIR=$(pwd)
 
@@ -85,7 +86,7 @@ do
 				md5sum -c "${filePrefix}_L${lane}_${barcode[sampleNumber]}_1.fq.gz.md5"
 
 
-				if [ "${barcodeType}" == "UMI" ]
+				if [ "${barcodeType}" == "UMIR3" ]
 				then
 					### SWAPPING R2 with R3 (R2 is umi)
 					cd "${intermediateDir}" || exit 
@@ -156,7 +157,7 @@ then
 		md5sum -c "${filePrefix}_L${lane}_DISCARDED_1.fq.gz.md5"
 
 
-		if [ "${barcodeType}" == "UMI" ]
+		if [ "${barcodeType}" == "UMIR3" ]
 		then
 			##DISCARDED R2/R3
 			cd "${intermediateDir}" || exit

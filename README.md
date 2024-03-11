@@ -1,5 +1,4 @@
-
-# Demultiplexing pipeline
+#### Demultiplexing pipeline
 
 ##1. Goal
 Next Generation Sequencing data processing using the inhouse pipeline for Bcl To FastQ conversion, demultiplexing and standardized filename convertion.

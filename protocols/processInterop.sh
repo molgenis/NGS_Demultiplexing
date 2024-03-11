@@ -10,6 +10,7 @@
 #string generatedScriptsDir
 #string nextSeqRunDataDir
 #string interopVersion
+#string	logsDir
 
 WHOAMI=$(whoami)
 # shellcheck source=/home/${WHOAMI}/molgenis.cfg
@@ -58,7 +59,7 @@ then
 fi
 
 
-touch "${workDir}/logs/${filePrefix}/run01.demultiplexing.started"
+touch "${workDir}/logs/${filePrefix}/${filePrefix}.demultiplexing.started"
 
 
 #################Dit stuk later aanpassen, naar hoe de diagnostiek het wil. Dit werkt ook nog niet, kan niet met komma getallen overweg.##################

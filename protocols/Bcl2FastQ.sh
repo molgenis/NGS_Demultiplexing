@@ -15,6 +15,8 @@
 #string runResultsDir
 #string barcodeType
 #string seqType
+#string logsDir
+#string filePrefix
 
 ml purge
 ${stage} "${demultiplexingversion}"
@@ -67,9 +69,15 @@ mv "${tmpIntermediateDir}/Illumina_R${run}.csv" "${intermediateDir}/Illumina_R${
 
 if  [[ "${seqType}" == "PE" && "${barcodeType}" == "UMI" ]]
 then
-	baseMask='y*,i8,y*,y*'
+	baseMask='N5Y146,I8,I8,N5Y146'
+	maskAdapterLength=10
+elif  [[ "${seqType}" == "PE" && "${barcodeType}" == "UMIR3" ]]
+then
+        baseMask='y*,i8,y*,y*'
+	maskAdapterLength=5
 else
 	baseMask='y*,i8'
+	maskAdapterLength=10
 fi
 
 if [ "${barcodeType}" == "UMI" ]
@@ -77,7 +85,7 @@ then
 	bcl2fastq \
 	--runfolder-dir "${nextSeqRunDataDir}" \
 	--output-dir "${tmpIntermediateDir}" \
-	--mask-short-adapter-reads 5 \
+	--mask-short-adapter-reads "${maskAdapterLength}" \
 	--use-bases-mask "${baseMask}" \
 	--minimum-trimmed-read-length 0 \
 	--create-fastq-for-index-reads \
@@ -86,10 +94,9 @@ else
 	bcl2fastq \
 	--runfolder-dir "${nextSeqRunDataDir}" \
 	--output-dir "${tmpIntermediateDir}" \
-	--mask-short-adapter-reads 10 \
+	--mask-short-adapter-reads "${maskAdapterLength}" \
 	--sample-sheet "${intermediateDir}/Illumina_R${run}.csv"
 fi
-
 
 mv "${tmpIntermediateDir}/"* "${intermediateDir}"
 echo "moved ${tmpIntermediateDir}/* ${intermediateDir}"
